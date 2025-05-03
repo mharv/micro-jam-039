@@ -43,6 +43,8 @@ class Program
                         globalState.CurrentPhase = GamePhase.Round;
                         GlobalVariables.BackgroundColor = Color.White;
                         currentFrame = 0;
+                        globalState.Player.PositionX = GetMouseX();
+                        globalState.Player.PositionY = GetMouseY();
                     }
 
                     BeginDrawing();
