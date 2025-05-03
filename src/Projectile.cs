@@ -1,6 +1,7 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using Types;
+using Globals;
 
 namespace Entities;
 
@@ -21,12 +22,16 @@ public class Projectile : Entity
         Target = null;
         Die = true;
         EntityType = EntityType.Projectile;
+        OriginEntityType = null;
 
         CurrentSpeed = BaseSpeed;
     }
 
-    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, Entity? target = null)
+    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Entity? target = null)
     {
+        OriginEntityType = originEntityType;
+        EntityType = EntityType.Projectile;
+
         PositionX = positionX;
         PositionY = positionY;
         Direction = direction;
@@ -53,8 +58,9 @@ public class Projectile : Entity
 
     public bool Die;
     private float CurrentSpeed;
+    public EntityType? OriginEntityType;
 
-    public void Update(float deltaTime, Entity[] nonProjectileList)
+    public void Update(float deltaTime, Entity[] nonProjectileList, GlobalState globalState)
     {
         BaseSpeed += Acceleration * deltaTime;
         if (Target != null)
@@ -112,6 +118,15 @@ public class Projectile : Entity
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_______: {PositionX}, {PositionY}");
                     entity.Health -= Damage;
+                    Die = true;
+                    break;
+                }
+                if (entity.EntityType == EntityType.Enemy && OriginEntityType != EntityType.Enemy)
+                {
+                    Console.WriteLine($"HIT___________{entity.EntityType}_______: {PositionX}, {PositionY}");
+                    // this doesnt do anything for now
+                    entity.Health -= Damage;
+                    globalState.IncreaseScore(Damage);
                     Die = true;
                     break;
                 }

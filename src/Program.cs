@@ -85,7 +85,7 @@ class Program
                             globalState.KillList.Add(projectile);
                             continue;
                         }
-                        projectile.Update(deltaTime, globalState.NonProjectileList.ToArray());
+                        projectile.Update(deltaTime, globalState.NonProjectileList.ToArray(), globalState);
                     }
 
                     foreach (Entity entity in globalState.KillList)

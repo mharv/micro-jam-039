@@ -4,7 +4,7 @@ using Raylib_cs;
 using Entities;
 using Types;
 
-class GlobalState
+public class GlobalState
 {
     public GlobalState()
     {
@@ -46,17 +46,22 @@ class GlobalState
     public int RoundDurationFrames { get; set; } = 0;
     public int TransitionDurationFrames { get; set; } = 0;
 
+    public void IncreaseScore(int amount)
+    {
+        Score += amount;
+    }
+
     public string DebugString(GamePhase currentPhase, int currentFrame)
     {
-        return $"X: {Player.PositionX,-5}\n" +
-                $"Y: {Player.PositionY,-5}\n" +
-                $"Left: {Player.leftButtonState,-5}\n" +
-                $"Middle: {Player.middleButtonState,-5}\n" +
-                $"Right: {Player.rightButtonState,-5}\n" +
-                $"Direction: {Player.Direction,-5}\n" +
-                $"Round: {currentPhase,-5}\n" +
-                $"Timer: {currentFrame,-5}\n" +
-                $"Score: {Score,-5}\n" +
-                $"Health: {Player.Health,-5}\n";
+        return $"\tX: {Player.PositionX,-5}\n" +
+                $"\tY: {Player.PositionY,-5}\n" +
+                $"\tLeft: {Player.leftButtonState,-5}\n" +
+                $"\tMiddle: {Player.middleButtonState,-5}\n" +
+                $"\tRight: {Player.rightButtonState,-5}\n" +
+                $"\tDirection: {Player.Direction,-5}\n" +
+                $"\tRound: {currentPhase,-5}\n" +
+                $"\tTimer: {currentFrame,-5}\n" +
+                $"\tScore: {Score,-5}\n" +
+                $"\tHealth: {Player.Health,-5}\n";
     }
 }
