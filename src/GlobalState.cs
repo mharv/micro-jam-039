@@ -7,7 +7,6 @@ class GlobalState
 {
     public GlobalState()
     {
-
         Player player = new Player();
         Player pastPlayer = new Player();
         Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2);
@@ -23,6 +22,7 @@ class GlobalState
     }
 
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
+    public List<Projectile> ProjectileList = new List<Projectile>();
     public Player Player { get; set; }
     public Player PastPlayer { get; set; } = new Player();
     public Enemy Enemy { get; set; }
