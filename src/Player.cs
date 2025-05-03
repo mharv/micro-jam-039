@@ -3,7 +3,7 @@ using static Raylib_cs.Raylib;
 
 namespace Entities;
 
-public class Player
+public class Player : Entity
 {
     // constructor
     public Player()
@@ -12,17 +12,14 @@ public class Player
         PositionY = 0.0f;
         MouseX = 0;
         MouseY = 0;
-        TargetX = 0;
-        TargetY = 0;
+        Target = null;
         Direction = 0;
         MoveSpeed = 5;
     }
-    public float PositionX;
-    public float PositionY;
+
     public int MouseX;
     public int MouseY;
-    public int TargetX;
-    public int TargetY;
+    public Entity? Target;
     public int Direction;
     public float MoveSpeed;
 
@@ -36,8 +33,17 @@ public class Player
         MouseX = GetMouseX();
         MouseY = GetMouseY();
 
-        Direction = (int)(Math.Atan2(PositionY - TargetY,
-                               PositionX - TargetX) * 180 / Math.PI);
+        if (Target != null)
+        {
+            Direction = (int)(Math.Atan2(PositionY - Target.PositionY,
+                                    PositionX - Target.PositionX) * 180 / Math.PI);
+        }
+        else
+        {
+            //Just a fallback to face the mouse if we have no target (Shouldn't happen) 
+            Direction = (int)(Math.Atan2(PositionY - MouseY,
+                                    PositionX - MouseX) * 180 / Math.PI);
+        }
 
         leftButtonState = Raylib.IsMouseButtonDown(MouseButton.Left);
         leftButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Left);
@@ -61,8 +67,13 @@ public class Player
 
         if (leftButtonPressed)
         {
-            projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10));
+            Shoot(projectileList);
         }
+    }
+
+    public void Shoot(List<Projectile> projectileList)
+    {
+        projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180));
     }
 
     public void Draw()
@@ -76,9 +87,8 @@ public class Player
         Raylib.DrawLine((int)PositionX, (int)PositionY, arrowX, arrowY, Color.Red);
     }
 
-    public void AcquireTarget(Enemy enemy)
+    public void AcquireTarget(Entity target)
     {
-        TargetX = enemy.X;
-        TargetY = enemy.Y;
+        Target = target;
     }
 }

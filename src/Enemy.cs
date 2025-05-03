@@ -3,17 +3,16 @@ using static Raylib_cs.Raylib;
 
 namespace Entities;
 
-public class Enemy
+public class Enemy : Entity
 {
-    public Enemy(int x, int y, int attackSpeed = 1, int hitboxRadius = 40)
+    public Enemy(float positionX, float positionY, int attackSpeed = 1, int hitboxRadius = 40)
     {
-        X = x;
-        Y = y;
+        PositionX = positionX;
+        PositionY = positionY;
         AttackSpeed = attackSpeed;
         HitboxRadius = hitboxRadius;
     }
-    public int X;
-    public int Y;
+
     public int AttackSpeed;
     public int HitboxRadius;
 
@@ -28,12 +27,7 @@ public class Enemy
 
     public void Draw()
     {
-        DrawCircle(X, Y, HitboxRadius, Color.Blue);
-    }
-
-    public (int, int) GetPosition()
-    {
-        return (X, Y);
+        DrawCircle((int)PositionX, (int)PositionY, HitboxRadius, Color.Blue);
     }
 }
 
