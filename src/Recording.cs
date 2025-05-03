@@ -27,15 +27,17 @@ class GameHistory
 }
 class TimeSlice
 {
-    public TimeSlice(int playerPositionX, int playerPositionY, float time)
+    public TimeSlice(float playerPositionX, float playerPositionY, int playerDirection, float time)
     {
         PlayerPositionX = playerPositionX;
         PlayerPositionY = playerPositionY;
+        PlayerDirection = playerDirection;
         Time = time;
     }
     public float Time { get; set; }
-    public int PlayerPositionX { get; set; }
-    public int PlayerPositionY { get; set; }
+    public float PlayerPositionX { get; set; }
+    public float PlayerPositionY { get; set; }
+    public int PlayerDirection { get; set; }
 }
 class Round
 {
@@ -47,6 +49,7 @@ class Round
     public TimeSlice[] History = [];
     public void AppendToHistory(TimeSlice timeSlice)
     {
+        Console.WriteLine($"TimeSlice: {timeSlice.Time}");
         History = History.Append(timeSlice).ToArray();
     }
 }
