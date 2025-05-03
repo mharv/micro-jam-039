@@ -37,6 +37,7 @@ public class GlobalState
     public Texture2D Foreground;
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
+    public List<Barrier> BarrierList = new List<Barrier>();
     public List<Entity> NonProjectileList = new List<Entity>();
     public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
