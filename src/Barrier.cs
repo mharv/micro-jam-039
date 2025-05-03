@@ -7,14 +7,24 @@ namespace Entities;
 
 public class Barrier : Entity
 {
-    public Barrier(float locX, float locY)
+    public Barrier(float locX, float locY, int roundId)
     {
         PositionX = locX;
         PositionY = locY;
         EntityType = EntityType.Barrier;
-
+        RoundCast = roundId;
     }
     public bool Status = false;
+    public bool Die { get; set; } = false;
+    public int RoundCast { get; set; } = 0;
+
+    public void Update(int Round)
+    {
+        if (RoundCast != Round)
+        {
+            Status = true;
+        }
+    }
 
     public void Draw()
     {

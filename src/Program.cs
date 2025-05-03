@@ -57,9 +57,10 @@ class Program
                     globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList, globalState.BarrierList);
+                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, roundId);
                     globalState.Enemy.Attack(currentFrame);
                     globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
+                    globalState.BarrierList.ForEach(barrier => barrier.Update(roundId));
 
                     TimeSlice[] currentFrameTimeSlices = [];
                     foreach (var round in gameHistory.Rounds)
@@ -79,7 +80,7 @@ class Program
                         pair.player.UpdatePast(currentFrame, globalState.ProjectileList, pair.timeSlice);
                     }
 
-
+                    // remove any projectiles on die list
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
                         if (projectile.Die)
@@ -94,7 +95,22 @@ class Program
                     {
                         globalState.ProjectileList.Remove((Projectile)entity);
                     }
+                    globalState.KillList.Clear();
 
+                    // remove any barriers on die list
+                    foreach (Entities.Barrier barrier in globalState.BarrierList)
+                    {
+                        if (barrier.Die)
+                        {
+                            globalState.KillList.Add(barrier);
+                            continue;
+                        }
+                    }
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        globalState.BarrierList.Remove((Entities.Barrier)entity);
+                        globalState.NonProjectileList.Remove((Entities.Barrier)entity);
+                    }
                     globalState.KillList.Clear();
 
                     if (currentFrame >= globalState.RoundDurationFrames)
