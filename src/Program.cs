@@ -67,6 +67,8 @@ class Program
                         timeSliceCounter = 0;
                         currentFrame = 0;
                     }
+                    globalState.Enemy.Attack(currentFrame);
+
                     break;
                 case GamePhase.Transition:
                     if (currentFrame >= globalState.TransitionDurationFrames)
@@ -97,7 +99,6 @@ class Program
             }
             if (globalState.CurrentPhase == GamePhase.Round)
             {
-                // Append to history
                 currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, currentFrame));
             }
             // Draw

@@ -10,7 +10,7 @@ class GlobalState
 
         Player player = new Player();
         Player pastPlayer = new Player();
-        Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2);
+        Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Hard);
 
         player.AcquireTarget(enemy);
 
@@ -33,13 +33,13 @@ class GlobalState
     public string DebugString(GamePhase currentPhase, int currentFrame)
     {
         return $"X: {Player.PositionX,-5}\n" +
-                                $"Y: {Player.PositionY,-5}\n" +
-                                $"Left: {Player.leftButtonState,-5}\n" +
-                                $"Middle: {Player.middleButtonState,-5}\n" +
-                                $"Right: {Player.rightButtonState,-5}\n" +
-                                $"Direction: {Player.Direction,-5}\n" +
-                                $"Round: {currentPhase,-5}\n" +
-                                $"Timer: {currentFrame,-5}\n" +
-                                $"Score: {Score,-5}\n"; ; ;
+                $"Y: {Player.PositionY,-5}\n" +
+                $"Left: {Player.leftButtonState,-5}\n" +
+                $"Middle: {Player.middleButtonState,-5}\n" +
+                $"Right: {Player.rightButtonState,-5}\n" +
+                $"Direction: {Player.Direction,-5}\n" +
+                $"Round: {currentPhase,-5}\n" +
+                $"Timer: {currentFrame,-5}\n" +
+                $"Score: {Score,-5}\n"; ; ;
     }
 }
