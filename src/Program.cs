@@ -53,11 +53,13 @@ class Program
                     break;
                 case GamePhase.Round:
                     globalState.Player.ReadInputs();
-                    globalState.Enemy.ReadInputs();
+                    globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.ProjectileList);
-                    globalState.Enemy.Update(deltaTime);
+
+                    globalState.Enemy.Attack(currentFrame);
+                    globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
                     Console.WriteLine(globalState.ProjectileList.Count);
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
@@ -72,7 +74,6 @@ class Program
                         timeSliceCounter = 0;
                         currentFrame = 0;
                     }
-                    globalState.Enemy.Attack(currentFrame);
 
                     break;
                 case GamePhase.Transition:

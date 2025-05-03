@@ -9,9 +9,10 @@ class GlobalState
     {
         Player player = new Player();
         Player pastPlayer = new Player();
-        Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Hard);
+        Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
 
         player.AcquireTarget(enemy);
+        enemy.AcquireTarget(player);
 
         Player = player;
         PastPlayer = pastPlayer;
