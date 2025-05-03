@@ -141,13 +141,17 @@ class Program
 
                 // Draw entities
                 globalState.Player.Draw();
-                if (gameHistory.Rounds.Length > 0 && globalState.CurrentPhase == GamePhase.Round)
+                if (gameHistory.Rounds.Length > 0)
                 {
                     foreach (var player in globalState.PastPlayers)
                     {
                         player.Draw();
                     }
-                    timeSliceCounter++;
+                    if (globalState.CurrentPhase != GamePhase.Transition)
+                    {
+                        timeSliceCounter++;
+                    }
+
                 }
                 globalState.Enemy.Draw();
                 foreach (Projectile projectile in globalState.ProjectileList)
