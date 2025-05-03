@@ -72,10 +72,6 @@ class Program
                         }
                     }
 
-                    Console.WriteLine($"TimeSlice: {currentFrame} {currentFrameTimeSlices.Length}");
-
-                    Console.WriteLine($"PastPlayers: {globalState.PastPlayers.Length}");
-
                     var zippedPlayersAndTimeSlices = globalState.PastPlayers.Zip(currentFrameTimeSlices, (player, timeSlice) => new { player, timeSlice });
                     foreach (var pair in zippedPlayersAndTimeSlices)
                     {

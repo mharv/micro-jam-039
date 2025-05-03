@@ -10,6 +10,8 @@ class GlobalState
         Player player = new Player();
         Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
 
+        player.EntityType = EntityType.PresentPlayer;
+        enemy.EntityType = EntityType.Enemy;
         player.AcquireTarget(enemy);
         enemy.AcquireTarget(player);
 

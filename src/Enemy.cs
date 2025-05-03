@@ -175,6 +175,7 @@ public class Enemy : Entity
     public Entity? Target;
     public int HitboxRadius;
     public int Direction = 0;
+    public EntityType EntityType = EntityType.Enemy;
     public DifficultySettings DifficultySettings;
 
     public void ReadInputs(int currentFrame, Player player)

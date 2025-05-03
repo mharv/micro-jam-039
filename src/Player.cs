@@ -1,5 +1,6 @@
 using Raylib_cs;
 using Recording;
+using Types;
 using static Raylib_cs.Raylib;
 
 namespace Entities;
@@ -7,7 +8,7 @@ namespace Entities;
 public class Player : Entity
 {
     // constructor
-    public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0)
+    public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0, EntityType entityType = EntityType.PastPlayer)
     {
         PositionX = positionX;
         PositionY = positionY;
@@ -16,6 +17,8 @@ public class Player : Entity
         Target = null;
         Direction = direction;
         MoveSpeed = 5;
+        Health = 100;
+        EntityType = entityType;
     }
 
     public int MouseX;
@@ -28,6 +31,10 @@ public class Player : Entity
     public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
+    public int Health;
+    public EntityType EntityType;
+
+
 
     public void ReadInputs()
     {

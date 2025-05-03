@@ -49,7 +49,6 @@ class Round
     public TimeSlice[] History = [];
     public void AppendToHistory(TimeSlice timeSlice)
     {
-        Console.WriteLine($"TimeSlice: {timeSlice.Time}");
         History = History.Append(timeSlice).ToArray();
     }
 }
