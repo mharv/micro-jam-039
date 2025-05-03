@@ -53,11 +53,12 @@ class Program
                     break;
                 case GamePhase.Round:
                     globalState.Player.ReadInputs();
-                    globalState.Enemy.ReadInputs();
+                    globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.ProjectileList);
-                    globalState.Enemy.Update(deltaTime);
+                    globalState.Enemy.Attack(currentFrame);
+                    globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
 
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
@@ -84,6 +85,7 @@ class Program
                         timeSliceCounter = 0;
                         currentFrame = 0;
                     }
+
                     break;
                 case GamePhase.Transition:
                     if (currentFrame >= globalState.TransitionDurationFrames)
@@ -115,6 +117,7 @@ class Program
             {
                 // Append to history
                 currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, currentFrame));
+
             }
             // Draw
             if (globalState.CurrentPhase != GamePhase.Menu)
