@@ -153,7 +153,7 @@ public class Projectile : Entity
                 if (entity.EntityType == EntityType.PresentPlayer)
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
-                    entity.Health -= Damage;
+                    entity.TakeDamage(Damage);
                     Die = true;
                     break;
                 }
@@ -161,7 +161,7 @@ public class Projectile : Entity
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now
-                    entity.Health -= Damage;
+                    entity.TakeDamage(Damage);
                     globalState.IncreaseScore(Damage);
                     Die = true;
                     break;

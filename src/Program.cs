@@ -133,8 +133,15 @@ class Program
             {
                 BeginDrawing();
 
+                Color backgroundColor = Color.White;
+
+                if (globalState.Player.Hit)
+                {
+                    backgroundColor = Color.Red;
+                }
+
                 ClearBackground(GlobalVariables.BackgroundColor);
-                DrawTexture(globalState.Background, 0, 0, Color.White);
+                DrawTexture(globalState.Background, 0, 0, backgroundColor);
 
                 // Text
                 Color textColor = Color.White;
