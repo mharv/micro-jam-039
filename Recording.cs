@@ -16,7 +16,7 @@ class GameHistory
         {
             foreach (var round in Rounds)
             {
-                writer.WriteLine($"Round {round.Id}");
+                writer.WriteLine($"Round {round.Id} Number of Time Slices: {round.History.Length}");
                 foreach (var timeSlice in round.History)
                 {
                     writer.WriteLine($"Time: {timeSlice.Time}, Player Position: ({timeSlice.PlayerPositionX}, {timeSlice.PlayerPositionY})");
