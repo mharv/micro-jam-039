@@ -22,7 +22,7 @@ class GameHistory
         }
     }
 }
-class TimeSlice
+public class TimeSlice
 {
     public TimeSlice(float playerPositionX, float playerPositionY, int playerDirection, bool playerShoot, float time)
     {

@@ -8,17 +8,16 @@ class GlobalState
     public GlobalState()
     {
         Player player = new Player();
-        Player pastPlayer = new Player();
         Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
 
         player.AcquireTarget(enemy);
         enemy.AcquireTarget(player);
 
         Player = player;
-        PastPlayer = pastPlayer;
+        PastPlayers = [];
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 10 * 60; // 3 seconds
+        RoundDurationFrames = 3 * 60; // 3 seconds
         TransitionDurationFrames = 3 * 60; // 3 seconds
     }
 
@@ -26,7 +25,7 @@ class GlobalState
     public List<Projectile> ProjectileList = new List<Projectile>();
     public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
-    public Player PastPlayer { get; set; } = new Player();
+    public Player[] PastPlayers { get; set; } = [];
     public Enemy Enemy { get; set; }
     public int Score { get; set; }
     public int RoundDurationFrames { get; set; } = 0;

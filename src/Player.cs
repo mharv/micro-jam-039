@@ -1,4 +1,5 @@
 using Raylib_cs;
+using Recording;
 using static Raylib_cs.Raylib;
 
 namespace Entities;
@@ -6,14 +7,14 @@ namespace Entities;
 public class Player : Entity
 {
     // constructor
-    public Player()
+    public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0)
     {
-        PositionX = 0.0f;
-        PositionY = 0.0f;
+        PositionX = positionX;
+        PositionY = positionY;
         MouseX = 0;
         MouseY = 0;
         Target = null;
-        Direction = 0;
+        Direction = direction;
         MoveSpeed = 5;
     }
 
@@ -51,7 +52,7 @@ public class Player : Entity
         rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
     }
 
-    public void Update(float deltaTime, List<Projectile> projectileList)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList)
     {
         float dx = MouseX - PositionX;
         float dy = MouseY - PositionY;
@@ -66,6 +67,16 @@ public class Player : Entity
         }
 
         if (leftButtonPressed)
+        {
+            Shoot(projectileList);
+        }
+    }
+    public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
+    {
+        PositionX = timeSlice.PlayerPositionX;
+        PositionY = timeSlice.PlayerPositionY;
+        Direction = timeSlice.PlayerDirection;
+        if (timeSlice.PlayerShoot)
         {
             Shoot(projectileList);
         }
