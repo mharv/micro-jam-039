@@ -2,9 +2,7 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 using Types;
 
-
 namespace Entities;
-
 
 public class DifficultySettings
 {
@@ -14,11 +12,11 @@ public class DifficultySettings
 }
 
 
-public class Enemy
+public class Enemy : Entity
 {
     Queue<EnemyAttackType> AttackQueue = new Queue<EnemyAttackType>();
 
-    public Enemy(int x, int y, Difficulty difficulty)
+    public Enemy(int positionX, int positionY, Difficulty difficulty)
     {
         DifficultySettings = new DifficultySettings();
 
@@ -50,10 +48,9 @@ public class Enemy
                 break;
         }
 
-        X = x;
-        Y = y;
-        TargetX = 0;
-        TargetY = 0;
+        PositionX = positionX;
+        PositionY = positionY;
+        Target = null;
         HitboxRadius = 40;
 
         AttackQueue.Enqueue(EnemyAttackType.Spiral);
@@ -63,24 +60,25 @@ public class Enemy
     }
 
 
-    public void AcquireTarget(Player player)
+    public void AcquireTarget(Entity target)
     {
-        TargetX = player.PositionX;
-        TargetY = player.PositionY;
+        Target = target;
     }
+
     public void UpdateDirection(int currentFrame)
     {
         if (currentFrame % DifficultySettings.DirectionTrackingSpeed == 0)
         {
-            if (Math.Abs(X - TargetX) > 1 || Math.Abs(Y - TargetY) > 1)
+            if (Target != null)
             {
-                Direction = (int)(Math.Atan2(Y - TargetY, X - TargetX) * 180 / Math.PI);
+                if (Math.Abs(PositionX - Target.PositionX) > 1 || Math.Abs(PositionY - Target.PositionY) > 1)
+                {
+                    Direction = (int)(Math.Atan2(PositionY - Target.PositionY, PositionX - Target.PositionX) * 180 / Math.PI);
+                }
             }
         }
     }
-    // {
-    //     Direction = (int)(Math.Atan2(Y - TargetY, X - TargetX) * 180 / Math.PI);
-    // }
+
     public void Attack(int currentFrame)
     {
         if (currentFrame % DifficultySettings.AttackInterval == 0)
@@ -99,14 +97,14 @@ public class Enemy
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                            existingProjectiles.Add(new Projectile(X, Y, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10, 180));
                             ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                             {
-                                new Projectile(X, Y, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10),
+                                new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10, 180),
                             });
                         }
                     }
@@ -119,14 +117,14 @@ public class Enemy
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * time_between_projectiles))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * time_between_projectiles].ToList();
-                            existingProjectiles.Add(new Projectile(X, Y, Direction, 0.0f, 10.0f, 0.0f, 5, 10));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180));
                             ProjectileSchedule[currentFrame + i * time_between_projectiles] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * time_between_projectiles, new Projectile[]
                             {
-                                new Projectile(X, Y, Direction, 0.0f, 10.0f, 0.0f, 5, 10),
+                                new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180),
                             });
                         }
                     }
@@ -136,14 +134,14 @@ public class Enemy
                     if (ProjectileSchedule.ContainsKey(currentFrame))
                     {
                         var existingProjectiles = ProjectileSchedule[currentFrame].ToList();
-                        existingProjectiles.Add(new Projectile(X, Y, Direction, 0.0f, 10.0f, 0.0f, 60, 10));
+                        existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 60, 10, 180));
                         ProjectileSchedule[currentFrame] = existingProjectiles.ToArray();
                     }
                     else
                     {
                         ProjectileSchedule.Add(currentFrame, new Projectile[]
                         {
-                            new Projectile(X, Y, Direction, 0.0f, 10.0f, 0.0f, 60, 10),
+                            new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 60, 10, 180),
                         });
                     }
                     break;
@@ -157,14 +155,14 @@ public class Enemy
                             if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                             {
                                 var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                                existingProjectiles.Add(new Projectile(X, Y, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10));
+                                existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10, 180));
                                 ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                             }
                             else
                             {
                                 ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                                 {
-                                    new Projectile(X, Y, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10),
+                                    new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 10.0f, 0.0f, 5, 10, 180),
                                 });
                             }
                         }
@@ -173,10 +171,8 @@ public class Enemy
             }
         }
     }
-    public int X;
-    public int Y;
-    public float TargetX;
-    public float TargetY;
+
+    public Entity? Target;
     public int HitboxRadius;
     public int Direction = 0;
     public DifficultySettings DifficultySettings;
@@ -207,17 +203,12 @@ public class Enemy
 
     public void Draw()
     {
-        DrawCircle(X, Y, HitboxRadius, Color.Blue);
+        DrawCircle((int)PositionX, (int)PositionY, HitboxRadius, Color.Blue);
 
         // draw a arrow pointing in player direction 40 pixels long
-        int arrowX = (int)(X - 60 * Math.Cos(Direction * Math.PI / 180));
-        int arrowY = (int)(X - 60 * Math.Sin(Direction * Math.PI / 180));
-        Raylib.DrawLine((int)X, (int)X, arrowX, arrowY, Color.Red);
-    }
-
-    public (int, int) GetPosition()
-    {
-        return (X, Y);
+        int arrowX = (int)(PositionX - 60 * Math.Cos(Direction * Math.PI / 180));
+        int arrowY = (int)(PositionY - 60 * Math.Sin(Direction * Math.PI / 180));
+        Raylib.DrawLine((int)PositionX, (int)PositionX, arrowX, arrowY, Color.Red);
     }
 }
 

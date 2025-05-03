@@ -18,12 +18,13 @@ class GlobalState
         PastPlayer = pastPlayer;
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 3 * 60; // 3 seconds
+        RoundDurationFrames = 10 * 60; // 3 seconds
         TransitionDurationFrames = 3 * 60; // 3 seconds
     }
 
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
+    public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
     public Player PastPlayer { get; set; } = new Player();
     public Enemy Enemy { get; set; }

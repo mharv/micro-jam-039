@@ -57,14 +57,25 @@ class Program
 
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.ProjectileList);
-
                     globalState.Enemy.Attack(currentFrame);
                     globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
-                    Console.WriteLine(globalState.ProjectileList.Count);
+
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
+                        if (projectile.Die)
+                        {
+                            globalState.KillList.Add(projectile);
+                            continue;
+                        }
                         projectile.Update(deltaTime);
                     }
+
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        globalState.ProjectileList.Remove((Projectile)entity);
+                    }
+
+                    globalState.KillList.Clear();
 
                     if (currentFrame >= globalState.RoundDurationFrames)
                     {
@@ -97,12 +108,16 @@ class Program
                 globalState.PastPlayer.PositionX = lastRound.History[timeSliceCounter].PlayerPositionX;
                 globalState.PastPlayer.PositionY = lastRound.History[timeSliceCounter].PlayerPositionY;
                 globalState.PastPlayer.Direction = lastRound.History[timeSliceCounter].PlayerDirection;
-
-
+                if (lastRound.History[timeSliceCounter].PlayerShoot)
+                {
+                    globalState.PastPlayer.Shoot(globalState.ProjectileList);
+                }
             }
             if (globalState.CurrentPhase == GamePhase.Round)
             {
-                currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, currentFrame));
+                // Append to history
+                currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, currentFrame));
+
             }
             // Draw
             if (globalState.CurrentPhase != GamePhase.Menu)
