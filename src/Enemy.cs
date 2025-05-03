@@ -175,7 +175,6 @@ public class Enemy : Entity
     }
 
     public Entity? Target;
-    public new int Radius;
     public int Direction = 0;
     public DifficultySettings DifficultySettings;
 

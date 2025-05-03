@@ -130,6 +130,15 @@ public class Projectile : Entity
                     Die = true;
                     break;
                 }
+                if (entity.EntityType == EntityType.Enemy && OriginEntityType == EntityType.PastPlayer)
+                {
+                    // Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
+                    // this doesnt do anything for now
+                    // entity.Health -= Damage;
+                    // globalState.IncreaseScore(Damage);
+                    Die = true;
+                    break;
+                }
             }
         }
 
