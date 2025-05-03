@@ -8,10 +8,18 @@ public enum Difficulty
 }
 
 
-enum EnemyAttackType
+public enum EnemyAttackType
 {
     Spiral,
     FastBurst,
     LargeProjectile,
     Shotgun
+}
+
+public enum EntityType
+{
+    PresentPlayer,
+    Enemy,
+    Projectile,
+    PastPlayer,
 }

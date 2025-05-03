@@ -22,7 +22,7 @@ class GameHistory
         }
     }
 }
-class TimeSlice
+public class TimeSlice
 {
     public TimeSlice(float playerPositionX, float playerPositionY, int playerDirection, bool playerShoot, float time)
     {
@@ -49,7 +49,6 @@ class Round
     public TimeSlice[] History = [];
     public void AppendToHistory(TimeSlice timeSlice)
     {
-        Console.WriteLine($"TimeSlice: {timeSlice.Time}");
         History = History.Append(timeSlice).ToArray();
     }
 }

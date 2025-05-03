@@ -55,9 +55,28 @@ class Program
                     globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, globalState.ProjectileList);
+                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList);
                     globalState.Enemy.Attack(currentFrame);
                     globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
+
+                    TimeSlice[] currentFrameTimeSlices = [];
+                    foreach (var round in gameHistory.Rounds)
+                    {
+                        foreach (var timeSlice in round.History)
+                        {
+                            if (timeSlice.Time == currentFrame)
+                            {
+                                currentFrameTimeSlices = currentFrameTimeSlices.Append(timeSlice).ToArray();
+                            }
+                        }
+                    }
+
+                    var zippedPlayersAndTimeSlices = globalState.PastPlayers.Zip(currentFrameTimeSlices, (player, timeSlice) => new { player, timeSlice });
+                    foreach (var pair in zippedPlayersAndTimeSlices)
+                    {
+                        pair.player.UpdatePast(currentFrame, globalState.ProjectileList, pair.timeSlice);
+                    }
+
 
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
@@ -81,10 +100,15 @@ class Program
                         globalState.CurrentPhase = GamePhase.Transition;
                         GlobalVariables.BackgroundColor = Color.Green;
                         gameHistory.AppendToRounds(currentRound);
+                        var startX = currentRound.History[0].PlayerPositionX;
+                        var startY = currentRound.History[0].PlayerPositionY;
+                        var direction = currentRound.History[0].PlayerDirection;
+                        globalState.PastPlayers = globalState.PastPlayers.Append(new Player(startX, startY, direction)).ToArray();
                         timeSliceCounter = 0;
                         currentFrame = 0;
                     }
-
+                    // Append to history
+                    currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, currentFrame));
                     break;
                 case GamePhase.Transition:
                     if (currentFrame >= globalState.TransitionDurationFrames)
@@ -99,24 +123,6 @@ class Program
                     break;
                 default:
                     break;
-            }
-            // get past player if exists
-            if (gameHistory.Rounds.Length > 0 && globalState.CurrentPhase == GamePhase.Round)
-            {
-                Round lastRound = gameHistory.Rounds[gameHistory.Rounds.Length - 1];
-                globalState.PastPlayer.PositionX = lastRound.History[timeSliceCounter].PlayerPositionX;
-                globalState.PastPlayer.PositionY = lastRound.History[timeSliceCounter].PlayerPositionY;
-                globalState.PastPlayer.Direction = lastRound.History[timeSliceCounter].PlayerDirection;
-                if (lastRound.History[timeSliceCounter].PlayerShoot)
-                {
-                    globalState.PastPlayer.Shoot(globalState.ProjectileList);
-                }
-            }
-            if (globalState.CurrentPhase == GamePhase.Round)
-            {
-                // Append to history
-                currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, currentFrame));
-
             }
             // Draw
             if (globalState.CurrentPhase != GamePhase.Menu)
@@ -134,8 +140,10 @@ class Program
                 globalState.Player.Draw();
                 if (gameHistory.Rounds.Length > 0 && globalState.CurrentPhase == GamePhase.Round)
                 {
-                    globalState.PastPlayer.Draw();
-
+                    foreach (var player in globalState.PastPlayers)
+                    {
+                        player.Draw();
+                    }
                     timeSliceCounter++;
                 }
                 globalState.Enemy.Draw();

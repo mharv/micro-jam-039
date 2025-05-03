@@ -1,4 +1,6 @@
 using Raylib_cs;
+using Recording;
+using Types;
 using static Raylib_cs.Raylib;
 
 namespace Entities;
@@ -6,17 +8,19 @@ namespace Entities;
 public class Player : Entity
 {
     // constructor
-    public Player()
+    public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0, EntityType entityType = EntityType.PastPlayer)
     {
         WizardSprite = LoadTexture("assets/wizard.png");
         WeaponSprite = LoadTexture("assets/weapon.png");
-        PositionX = 0.0f;
-        PositionY = 0.0f;
+        PositionX = positionX;
+        PositionY = positionY;
         MouseX = 0;
         MouseY = 0;
         Target = null;
-        Direction = 0;
+        Direction = direction;
         MoveSpeed = 5;
+        Health = 100;
+        EntityType = entityType;
     }
 
     private Texture2D WizardSprite;
@@ -32,6 +36,8 @@ public class Player : Entity
     public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
+    public int Health;
+    public EntityType EntityType;
 
     public void ReadInputs()
     {
@@ -56,7 +62,7 @@ public class Player : Entity
         rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
     }
 
-    public void Update(float deltaTime, List<Projectile> projectileList)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList)
     {
         float dx = MouseX - PositionX;
         float dy = MouseY - PositionY;
@@ -75,6 +81,16 @@ public class Player : Entity
             Shoot(projectileList);
         }
     }
+    public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
+    {
+        PositionX = timeSlice.PlayerPositionX;
+        PositionY = timeSlice.PlayerPositionY;
+        Direction = timeSlice.PlayerDirection;
+        if (timeSlice.PlayerShoot)
+        {
+            Shoot(projectileList);
+        }
+    }
 
     public void Shoot(List<Projectile> projectileList)
     {
@@ -86,7 +102,10 @@ public class Player : Entity
         //if it's you
         Color drawColor = Color.White;
         //if it's the past
-        //drawColor = ColorAlpha(Color.White, 0.5f);
+        if (EntityType == EntityType.PastPlayer)
+        {
+            drawColor = ColorAlpha(Color.White, 0.5f);
+        }
 
         DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
         Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);

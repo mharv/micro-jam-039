@@ -1,7 +1,10 @@
+using Types;
 namespace Entities;
+
 
 public class Entity
 {
+    EntityType EntityType;
     public float PositionX;
     public float PositionY;
 
