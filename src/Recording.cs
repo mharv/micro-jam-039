@@ -1,6 +1,3 @@
-
-
-
 namespace Recording;
 
 class GameHistory
