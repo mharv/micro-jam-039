@@ -86,7 +86,7 @@ class Program
                             globalState.KillList.Add(projectile);
                             continue;
                         }
-                        projectile.Update(deltaTime);
+                        projectile.Update(deltaTime, globalState.NonProjectileList.ToArray());
                     }
 
                     foreach (Entity entity in globalState.KillList)
@@ -104,7 +104,9 @@ class Program
                         var startX = currentRound.History[0].PlayerPositionX;
                         var startY = currentRound.History[0].PlayerPositionY;
                         var direction = currentRound.History[0].PlayerDirection;
-                        globalState.PastPlayers = globalState.PastPlayers.Append(new Player(startX, startY, direction)).ToArray();
+                        var tempPastPlayer = new Player(startX, startY, direction);
+                        globalState.PastPlayers = globalState.PastPlayers.Append(tempPastPlayer).ToArray();
+                        globalState.NonProjectileList = globalState.NonProjectileList.Append(tempPastPlayer).ToList();
                         timeSliceCounter = 0;
                         currentFrame = 0;
                     }

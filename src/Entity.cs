@@ -4,9 +4,12 @@ namespace Entities;
 
 public class Entity
 {
-    EntityType EntityType;
+    public EntityType EntityType;
     public float PositionX;
     public float PositionY;
+
+    public int Health;
+    public int Radius;
 
     public (float, float) GetPosition()
     {

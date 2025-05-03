@@ -1,5 +1,6 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
+using Types;
 
 namespace Entities;
 
@@ -19,6 +20,7 @@ public class Projectile : Entity
         FramesToLive = 0;
         Target = null;
         Die = true;
+        EntityType = EntityType.Projectile;
 
         CurrentSpeed = BaseSpeed;
     }
@@ -44,7 +46,7 @@ public class Projectile : Entity
     public float TurnSpeed;
     public float BaseSpeed;
     public float Acceleration;
-    public int Radius;
+    public new int Radius;
     public int Damage;
     public int FramesToLive;
     public Entity? Target;
@@ -52,7 +54,7 @@ public class Projectile : Entity
     public bool Die;
     private float CurrentSpeed;
 
-    public void Update(float deltaTime)
+    public void Update(float deltaTime, Entity[] nonProjectileList)
     {
         BaseSpeed += Acceleration * deltaTime;
         if (Target != null)
@@ -96,6 +98,25 @@ public class Projectile : Entity
 
         PositionX += dx;
         PositionY += dy;
+
+        // check if projectile collides with anyhting in globalState.NonProjectileList
+        foreach (Entity entity in nonProjectileList)
+        {
+            float deltax = MathF.Abs(entity.PositionX - PositionX);
+            float deltay = MathF.Abs(entity.PositionY - PositionY);
+            float distance = MathF.Sqrt(MathF.Pow(deltax, 2) + MathF.Pow(deltay, 2));
+
+            if (distance < Radius + entity.Radius)
+            {
+                if (entity.EntityType == EntityType.PresentPlayer)
+                {
+                    Console.WriteLine($"HIT___________{entity.EntityType}_______: {PositionX}, {PositionY}");
+                    entity.Health -= Damage;
+                    Die = true;
+                    break;
+                }
+            }
+        }
 
         if (FramesToLive-- <= 0)
         {

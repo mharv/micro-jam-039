@@ -51,12 +51,14 @@ public class Enemy : Entity
         PositionX = positionX;
         PositionY = positionY;
         Target = null;
-        HitboxRadius = 40;
+        Radius = 40;
 
         AttackQueue.Enqueue(EnemyAttackType.Spiral);
         AttackQueue.Enqueue(EnemyAttackType.FastBurst);
         AttackQueue.Enqueue(EnemyAttackType.LargeProjectile);
         AttackQueue.Enqueue(EnemyAttackType.Shotgun);
+
+        EntityType = EntityType.Enemy;
     }
 
 
@@ -173,9 +175,8 @@ public class Enemy : Entity
     }
 
     public Entity? Target;
-    public int HitboxRadius;
+    public new int Radius;
     public int Direction = 0;
-    public EntityType EntityType = EntityType.Enemy;
     public DifficultySettings DifficultySettings;
 
     public void ReadInputs(int currentFrame, Player player)
@@ -204,7 +205,7 @@ public class Enemy : Entity
 
     public void Draw()
     {
-        DrawCircle((int)PositionX, (int)PositionY, HitboxRadius, Color.Blue);
+        DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Blue);
 
         // draw a arrow pointing in player direction 40 pixels long
         int arrowX = (int)(PositionX - 60 * Math.Cos(Direction * Math.PI / 180));

@@ -31,8 +31,7 @@ public class Player : Entity
     public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
-    public int Health;
-    public EntityType EntityType;
+    public new int Radius = 20;
 
 
 
@@ -97,7 +96,7 @@ public class Player : Entity
     public void Draw()
     {
         // draw player
-        DrawCircle((int)PositionX, (int)PositionY, 20, Color.Red);
+        DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Red);
 
         // draw a arrow pointing in player direction 40 pixels long
         int arrowX = (int)(PositionX - 40 * Math.Cos(Direction * Math.PI / 180));

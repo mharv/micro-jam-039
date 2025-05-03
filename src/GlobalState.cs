@@ -10,8 +10,14 @@ class GlobalState
         Player player = new Player();
         Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
 
+
         player.EntityType = EntityType.PresentPlayer;
         enemy.EntityType = EntityType.Enemy;
+
+        NonProjectileList.Add(player);
+        NonProjectileList.Add(enemy);
+
+
         player.AcquireTarget(enemy);
         enemy.AcquireTarget(player);
 
@@ -25,6 +31,7 @@ class GlobalState
 
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
+    public List<Entity> NonProjectileList = new List<Entity>();
     public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
     public Player[] PastPlayers { get; set; } = [];
@@ -43,6 +50,7 @@ class GlobalState
                 $"Direction: {Player.Direction,-5}\n" +
                 $"Round: {currentPhase,-5}\n" +
                 $"Timer: {currentFrame,-5}\n" +
-                $"Score: {Score,-5}\n"; ; ;
+                $"Score: {Score,-5}\n" +
+                $"Health: {Player.Health,-5}\n";
     }
 }
