@@ -21,6 +21,8 @@ public class Player : Entity
         MoveSpeed = 5;
         Health = 100;
         EntityType = entityType;
+        Radius = 20;
+        ShootDistance = Radius + 10.0f;
     }
 
     private Texture2D WizardSprite;
@@ -36,7 +38,8 @@ public class Player : Entity
     public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
-    public new int Radius = 20;
+
+    public float ShootDistance;
 
     public void ReadInputs()
     {
@@ -93,7 +96,13 @@ public class Player : Entity
 
     public void Shoot(List<Projectile> projectileList)
     {
-        projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180, EntityType));
+        float radians = Direction * MathF.PI / 180;
+        float forwardX = MathF.Cos(radians) * -ShootDistance;
+        float forwardY = MathF.Sin(radians) * -ShootDistance;
+
+
+
+        projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, "assets/fireball.png", 3));
     }
 
     public void Draw()
