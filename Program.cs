@@ -1,6 +1,7 @@
 ﻿using Raylib_cs;
 using Globals;
 using static Raylib_cs.Raylib;
+using Recording;
 
 namespace BalanceOfTime;
 
@@ -19,6 +20,10 @@ class Program
         // Timer variables
         GamePhase currentPhase = GamePhase.Menu;
         float currentTimer = 0f;
+
+        GameHistory gameHistory = new GameHistory();
+        Round currentRound = new Round();
+        int roundId = currentRound.Id;
 
         while (!Raylib.WindowShouldClose())
         {
@@ -46,13 +51,27 @@ class Program
             {
                 currentPhase = GamePhase.Transition;
                 GlobalVariables.BackgroundColor = Color.Green;
+                gameHistory.AppendToRounds(currentRound);
                 currentTimer = 0f;
             }
             else if (currentPhase == GamePhase.Transition && currentTimer >= globalState.TransitionDuration)
             {
                 currentPhase = GamePhase.Round;
                 GlobalVariables.BackgroundColor = Color.White;
+                currentRound = new Round(roundId);
+                roundId = currentRound.Id;
+
                 currentTimer = 0f;
+            }
+
+
+            if (currentPhase == GamePhase.Transition)
+            {
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(GlobalVariables.BackgroundColor);
+                Raylib.DrawText("Transition... \nnext boss", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.Black);
+                Raylib.EndDrawing();
+                continue;
             }
 
 
@@ -69,6 +88,9 @@ class Program
             bool leftButtonState = Raylib.IsMouseButtonDown(MouseButton.Left);
             bool middleButtonState = Raylib.IsMouseButtonDown(MouseButton.Middle);
             bool rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
+
+            // update the round history
+            currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, currentTimer));
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(GlobalVariables.BackgroundColor);
@@ -96,6 +118,11 @@ class Program
 
             Raylib.EndDrawing();
         }
+
+        // Save the game history to a file DEBUGGING
+        string filePath = "game_history.txt";
+        gameHistory.SaveToFile(filePath);
+        Console.WriteLine($"Game history saved to {filePath}");
 
         Raylib.CloseWindow();
     }
