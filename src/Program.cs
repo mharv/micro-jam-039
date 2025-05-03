@@ -1,7 +1,7 @@
 ﻿using Raylib_cs;
 using Globals;
-using Entities;
 using static Raylib_cs.Raylib;
+using Entities;
 using Recording;
 using Types;
 
@@ -56,8 +56,13 @@ class Program
                     globalState.Enemy.ReadInputs();
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime);
+                    globalState.Player.Update(deltaTime, globalState.ProjectileList);
                     globalState.Enemy.Update(deltaTime);
+                    Console.WriteLine(globalState.ProjectileList.Count);
+                    foreach (Projectile projectile in globalState.ProjectileList)
+                    {
+                        projectile.Update(deltaTime);
+                    }
 
                     if (currentFrame >= globalState.RoundDurationFrames)
                     {
@@ -87,9 +92,6 @@ class Program
             // get past player if exists
             if (gameHistory.Rounds.Length > 0 && globalState.CurrentPhase == GamePhase.Round)
             {
-                // get the last round
-                Console.WriteLine($"TimeSliceCounter: {timeSliceCounter}");
-                Console.WriteLine($"History Length: {gameHistory.Rounds[gameHistory.Rounds.Length - 1].History.Length}");
                 Round lastRound = gameHistory.Rounds[gameHistory.Rounds.Length - 1];
                 globalState.PastPlayer.PositionX = lastRound.History[timeSliceCounter].PlayerPositionX;
                 globalState.PastPlayer.PositionY = lastRound.History[timeSliceCounter].PlayerPositionY;
@@ -122,6 +124,10 @@ class Program
                     timeSliceCounter++;
                 }
                 globalState.Enemy.Draw();
+                foreach (Projectile projectile in globalState.ProjectileList)
+                {
+                    projectile.Draw();
+                }
 
                 EndDrawing();
             }

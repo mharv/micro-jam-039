@@ -27,6 +27,7 @@ public class Player
     public float MoveSpeed;
 
     public bool leftButtonState;
+    public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
 
@@ -39,11 +40,12 @@ public class Player
                                PositionX - TargetX) * 180 / Math.PI);
 
         leftButtonState = Raylib.IsMouseButtonDown(MouseButton.Left);
+        leftButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Left);
         middleButtonState = Raylib.IsMouseButtonDown(MouseButton.Middle);
         rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
     }
 
-    public void Update(float deltaTime)
+    public void Update(float deltaTime, List<Projectile> projectileList)
     {
         float dx = MouseX - PositionX;
         float dy = MouseY - PositionY;
@@ -55,6 +57,11 @@ public class Player
 
             PositionX += dx * MoveSpeed;
             PositionY += dy * MoveSpeed;
+        }
+
+        if (leftButtonPressed)
+        {
+            projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10));
         }
     }
 
