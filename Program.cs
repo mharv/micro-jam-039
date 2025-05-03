@@ -1,12 +1,16 @@
 ﻿using Raylib_cs;
+using Globals;
 
-namespace HelloWorld;
+namespace BalanceOfTime;
 
 class Program
 {
     public static void Main()
     {
-        Raylib.InitWindow(800, 480, "Hello World");
+        Raylib.InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Hello World");
+        GlobalState globalState = new GlobalState();
+        globalState.Score = 0;
+        Raylib.SetTargetFPS(60);
 
         while (!Raylib.WindowShouldClose())
         {
