@@ -10,6 +10,8 @@ public class Player : Entity
     // constructor
     public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0, EntityType entityType = EntityType.PastPlayer)
     {
+        WizardSprite = LoadTexture("assets/wizard.png");
+        WeaponSprite = LoadTexture("assets/weapon.png");
         PositionX = positionX;
         PositionY = positionY;
         MouseX = 0;
@@ -20,6 +22,9 @@ public class Player : Entity
         Health = 100;
         EntityType = entityType;
     }
+
+    private Texture2D WizardSprite;
+    private Texture2D WeaponSprite;
 
     public int MouseX;
     public int MouseY;
@@ -32,8 +37,6 @@ public class Player : Entity
     public bool middleButtonState;
     public bool rightButtonState;
     public new int Radius = 20;
-
-
 
     public void ReadInputs()
     {
@@ -95,13 +98,20 @@ public class Player : Entity
 
     public void Draw()
     {
-        // draw player
-        DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Red);
+        //if it's you
+        Color drawColor = Color.White;
+        //if it's the past
+        if (EntityType == EntityType.PastPlayer)
+        {
+            drawColor = ColorAlpha(Color.White, 0.5f);
+        }
 
-        // draw a arrow pointing in player direction 40 pixels long
-        int arrowX = (int)(PositionX - 40 * Math.Cos(Direction * Math.PI / 180));
-        int arrowY = (int)(PositionY - 40 * Math.Sin(Direction * Math.PI / 180));
-        Raylib.DrawLine((int)PositionX, (int)PositionY, arrowX, arrowY, Color.Red);
+        DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
+        Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+        Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+        System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+        DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
     }
 
     public void AcquireTarget(Entity target)

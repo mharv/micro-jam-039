@@ -11,7 +11,6 @@ namespace BalanceOfTime;
 
 class Program
 {
-
     public static void Main()
     {
         InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Hello World");
@@ -133,9 +132,10 @@ class Program
                 BeginDrawing();
 
                 ClearBackground(GlobalVariables.BackgroundColor);
+                DrawTexture(globalState.Background, 0, 0, Color.White);
 
                 // Text
-                Color textColor = Color.Black;
+                Color textColor = Color.White;
                 string text = globalState.DebugString(globalState.CurrentPhase, currentFrame);
                 DrawText(text, 12, 12, 20, textColor);
 
@@ -155,6 +155,7 @@ class Program
                     projectile.Draw();
                 }
 
+                DrawTexture(globalState.Foreground, 0, 0, Color.White);
                 EndDrawing();
             }
         }
