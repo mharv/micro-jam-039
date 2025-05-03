@@ -12,6 +12,7 @@ public class Player : Entity
     {
         WizardSprite = LoadTexture("assets/wizard.png");
         WeaponSprite = LoadTexture("assets/weapon.png");
+        ProjectileSprite = LoadTexture("assets/fireball.png");
         PositionX = positionX;
         PositionY = positionY;
         MouseX = 0;
@@ -28,6 +29,7 @@ public class Player : Entity
 
     private Texture2D WizardSprite;
     private Texture2D WeaponSprite;
+    private Texture2D ProjectileSprite;
 
     public int MouseX;
     public int MouseY;
@@ -119,7 +121,7 @@ public class Player : Entity
         float forwardX = MathF.Cos(radians) * -ShootDistance;
         float forwardY = MathF.Sin(radians) * -ShootDistance;
 
-        projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, "assets/fireball.png", 3));
+        projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, 3));
     }
 
     public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)

@@ -45,12 +45,11 @@ public class Projectile : Entity
         AnimFramesCounter = 0;
         CurrentAnimFrame = 0;
         OriginEntityType = null;
-        LoadedTexture = false;
 
         CurrentSpeed = BaseSpeed;
     }
 
-    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, string texturePath = "", int frames = 1, Entity? target = null)
+    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Texture2D texture = new Texture2D(), int frames = 1, Entity? target = null)
     {
         OriginEntityType = originEntityType;
         EntityType = EntityType.Projectile;
@@ -66,15 +65,7 @@ public class Projectile : Entity
         FramesToLive = framesToLive;
         Target = target;
         Die = false;
-        if (texturePath != "")
-        {
-            Texture = LoadTexture(texturePath);
-            LoadedTexture = true;
-        }
-        else
-        {
-            LoadedTexture = false;
-        }
+        Texture = texture;
         AnimationFrames = frames;
         AnimationSpeed = 15;
         AnimFramesCounter = 0;
@@ -199,7 +190,7 @@ public class Projectile : Entity
 
     public void Draw()
     {
-        if (LoadedTexture)
+        if (Texture.Id != 0)
         {
             int realWidth = Texture.Width / AnimationFrames;
             Rectangle sourceRect = new Rectangle(CurrentAnimFrame * realWidth, 0, Texture.Width / AnimationFrames, Texture.Height);
