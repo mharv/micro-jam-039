@@ -57,7 +57,7 @@ class Program
                     globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList);
+                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList, globalState.BarrierList);
                     globalState.Enemy.Attack(currentFrame);
                     globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
 
@@ -166,6 +166,11 @@ class Program
                 foreach (Projectile projectile in globalState.ProjectileList)
                 {
                     projectile.Draw();
+                }
+
+                foreach (Entities.Barrier barrier in globalState.BarrierList)
+                {
+                    barrier.Draw();
                 }
 
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);

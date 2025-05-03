@@ -42,6 +42,8 @@ public class Player : Entity
     public bool rightButtonState;
 
     public float ShootDistance;
+    public bool rightButtonPressed;
+
 
     public void ReadInputs()
     {
@@ -64,9 +66,10 @@ public class Player : Entity
         leftButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Left);
         middleButtonState = Raylib.IsMouseButtonDown(MouseButton.Middle);
         rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
+        rightButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Right);
     }
 
-    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList)
     {
         if (Hit)
         {
@@ -93,6 +96,10 @@ public class Player : Entity
         {
             Shoot(projectileList);
         }
+        if (rightButtonPressed)
+        {
+            Place(barrierList);
+        }
     }
     public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
     {
@@ -112,6 +119,29 @@ public class Player : Entity
         float forwardY = MathF.Sin(radians) * -ShootDistance;
 
         projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, "assets/fireball.png", 3));
+    }
+
+    public void Place(List<Barrier> barrierList)
+    {
+        var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
+        var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
+        var EndX = StartX + (float)(Math.Cos((Direction + 90) * Math.PI / 180) * -80);
+        var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
+        var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
+        var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
+        EntityType = EntityType.Barrier;
+
+        int circleCount = 10; // Number of circles
+        float stepX = (EndX - StartX) / circleCount;
+        float stepY = (EndY - StartY) / circleCount;
+
+        for (int i = 0; i <= circleCount; i++)
+        {
+            float circleX = StartX + stepX * i;
+            float circleY = StartY + stepY * i;
+            Barrier barrier = new Barrier(circleX, circleY);
+            barrierList.Add(barrier);
+        }
     }
 
     public void Draw()
