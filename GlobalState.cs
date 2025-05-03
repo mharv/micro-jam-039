@@ -4,7 +4,6 @@ using Types;
 class GlobalState
 {
     public int Score { get; set; }
-
-
-    public PlayerPosition PlayerPosition { get; set; } = new PlayerPosition();
+    public Player Player { get; set; } = new Player();
+    public Enemy Enemy { get; set; } = new Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, 1, 40);
 }
