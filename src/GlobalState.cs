@@ -1,5 +1,6 @@
 namespace Globals;
 
+using Raylib_cs;
 using Entities;
 using Types;
 
@@ -19,10 +20,15 @@ class GlobalState
         PastPlayers = [];
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 3 * 60; // 3 seconds
+        RoundDurationFrames = 10 * 60; // 3 seconds
         TransitionDurationFrames = 3 * 60; // 3 seconds
+
+        Background = Raylib.LoadTexture("assets/background.png");
+        Foreground = Raylib.LoadTexture("assets/foreground.png");
     }
 
+    public Texture2D Background;
+    public Texture2D Foreground;
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
     public List<Entity> KillList = new List<Entity>();
