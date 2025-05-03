@@ -21,6 +21,9 @@ public class Player : Entity
         MoveSpeed = 5;
         Health = 100;
         EntityType = entityType;
+        Radius = 20;
+        ShootDistance = Radius + 10.0f;
+        HitDuration = 5;
     }
 
     private Texture2D WizardSprite;
@@ -31,13 +34,16 @@ public class Player : Entity
     public Entity? Target;
     public int Direction;
     public float MoveSpeed;
+    public int HitDuration;
 
     public bool leftButtonState;
     public bool leftButtonPressed;
     public bool middleButtonState;
     public bool rightButtonState;
+
+    public float ShootDistance;
     public bool rightButtonPressed;
-    public new int Radius = 20;
+
 
     public void ReadInputs()
     {
@@ -65,6 +71,15 @@ public class Player : Entity
 
     public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList)
     {
+        if (Hit)
+        {
+            HitTimer++;
+            if (HitTimer >= HitDuration)
+            {
+                Hit = false;
+            }
+        }
+
         float dx = MouseX - PositionX;
         float dy = MouseY - PositionY;
         float length = MathF.Sqrt(dx * dx + dy * dy);
@@ -99,7 +114,11 @@ public class Player : Entity
 
     public void Shoot(List<Projectile> projectileList)
     {
-        projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180, EntityType));
+        float radians = Direction * MathF.PI / 180;
+        float forwardX = MathF.Cos(radians) * -ShootDistance;
+        float forwardY = MathF.Sin(radians) * -ShootDistance;
+
+        projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, "assets/fireball.png", 3));
     }
 
     public void Place(List<Barrier> barrierList)
@@ -129,10 +148,17 @@ public class Player : Entity
     {
         //if it's you
         Color drawColor = Color.White;
+
+        if (Hit)
+        {
+            Console.WriteLine("I'm gunna be red");
+            drawColor = Color.Red;
+        }
+
         //if it's the past
         if (EntityType == EntityType.PastPlayer)
         {
-            drawColor = ColorAlpha(Color.White, 0.5f);
+            drawColor = ColorAlpha(drawColor, 0.5f);
         }
 
         DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);

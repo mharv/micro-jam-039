@@ -7,6 +7,24 @@ namespace Entities;
 
 public class Projectile : Entity
 {
+    public int AnimationSpeed;
+    public float Direction;
+    public float TurnSpeed;
+    public float BaseSpeed;
+    public float Acceleration;
+    public new int Radius;
+    public int Damage;
+    public int FramesToLive;
+    public Entity? Target;
+    public Texture2D Texture;
+    public bool LoadedTexture;
+    public int AnimationFrames;
+    public bool Die;
+    private float CurrentSpeed;
+    private int AnimFramesCounter;
+    private int CurrentAnimFrame;
+    public EntityType? OriginEntityType;
+
     // constructor
     public Projectile()
     {
@@ -22,12 +40,17 @@ public class Projectile : Entity
         Target = null;
         Die = true;
         EntityType = EntityType.Projectile;
+        AnimationFrames = 1;
+        AnimationSpeed = 15;
+        AnimFramesCounter = 0;
+        CurrentAnimFrame = 0;
         OriginEntityType = null;
+        LoadedTexture = false;
 
         CurrentSpeed = BaseSpeed;
     }
 
-    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Entity? target = null)
+    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, string texturePath = "", int frames = 1, Entity? target = null)
     {
         OriginEntityType = originEntityType;
         EntityType = EntityType.Projectile;
@@ -43,25 +66,38 @@ public class Projectile : Entity
         FramesToLive = framesToLive;
         Target = target;
         Die = false;
+        if (texturePath != "")
+        {
+            Texture = LoadTexture(texturePath);
+            LoadedTexture = true;
+        }
+        else
+        {
+            LoadedTexture = false;
+        }
+        AnimationFrames = frames;
+        AnimationSpeed = 15;
+        AnimFramesCounter = 0;
+        CurrentAnimFrame = 0;
 
         CurrentSpeed = BaseSpeed;
     }
 
-    public float Direction;
-    public float TurnSpeed;
-    public float BaseSpeed;
-    public float Acceleration;
-    public new int Radius;
-    public int Damage;
-    public int FramesToLive;
-    public Entity? Target;
-
-    public bool Die;
-    private float CurrentSpeed;
-    public EntityType? OriginEntityType;
-
     public void Update(float deltaTime, Entity[] nonProjectileList, GlobalState globalState)
     {
+        // Animation Logic
+        AnimFramesCounter++;
+        if (AnimFramesCounter >= (60 / AnimationSpeed))
+        {
+            AnimFramesCounter = 0;
+            CurrentAnimFrame++;
+            if (CurrentAnimFrame > AnimationFrames)
+            {
+                CurrentAnimFrame = 0;
+            }
+        }
+
+        // Gameplay Logic
         BaseSpeed += Acceleration * deltaTime;
         if (Target != null)
         {
@@ -117,7 +153,7 @@ public class Projectile : Entity
                 if (entity.EntityType == EntityType.PresentPlayer)
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
-                    entity.Health -= Damage;
+                    entity.TakeDamage(Damage);
                     Die = true;
                     break;
                 }
@@ -125,7 +161,7 @@ public class Projectile : Entity
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now
-                    entity.Health -= Damage;
+                    entity.TakeDamage(Damage);
                     globalState.IncreaseScore(Damage);
                     Die = true;
                     break;
@@ -150,12 +186,18 @@ public class Projectile : Entity
 
     public void Draw()
     {
-        DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Red);
+        if (LoadedTexture)
+        {
+            int realWidth = Texture.Width / AnimationFrames;
+            Rectangle sourceRect = new Rectangle(CurrentAnimFrame * realWidth, 0, Texture.Width / AnimationFrames, Texture.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, realWidth, Texture.Height);
 
-        float rads = Direction * MathF.PI / 180;
-
-        int arrowX = (int)(PositionX - 40 * Math.Cos(rads));
-        int arrowY = (int)(PositionY - 40 * Math.Sin(rads));
-        DrawLine((int)PositionX, (int)PositionY, arrowX, arrowY, Color.Red);
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(realWidth / 2, Texture.Height / 2);
+            DrawTexturePro(Texture, sourceRect, destRect, origin, Direction, Color.White);
+        }
+        else
+        {
+            DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Red);
+        }
     }
 }
