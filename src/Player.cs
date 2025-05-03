@@ -93,7 +93,7 @@ public class Player : Entity
 
     public void Shoot(List<Projectile> projectileList)
     {
-        projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180));
+        projectileList.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 10.0f, 0.0f, 5, 10, 180, EntityType));
     }
 
     public void Draw()

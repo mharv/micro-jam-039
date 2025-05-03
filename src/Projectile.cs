@@ -116,14 +116,14 @@ public class Projectile : Entity
             {
                 if (entity.EntityType == EntityType.PresentPlayer)
                 {
-                    Console.WriteLine($"HIT___________{entity.EntityType}_______: {PositionX}, {PositionY}");
+                    Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     entity.Health -= Damage;
                     Die = true;
                     break;
                 }
-                if (entity.EntityType == EntityType.Enemy && OriginEntityType != EntityType.Enemy)
+                if (entity.EntityType == EntityType.Enemy && OriginEntityType == EntityType.PresentPlayer)
                 {
-                    Console.WriteLine($"HIT___________{entity.EntityType}_______: {PositionX}, {PositionY}");
+                    Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now
                     entity.Health -= Damage;
                     globalState.IncreaseScore(Damage);
