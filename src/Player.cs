@@ -8,6 +8,8 @@ public class Player : Entity
     // constructor
     public Player()
     {
+        WizardSprite = LoadTexture("assets/wizard.png");
+        WeaponSprite = LoadTexture("assets/weapon.png");
         PositionX = 0.0f;
         PositionY = 0.0f;
         MouseX = 0;
@@ -16,6 +18,9 @@ public class Player : Entity
         Direction = 0;
         MoveSpeed = 5;
     }
+
+    private Texture2D WizardSprite;
+    private Texture2D WeaponSprite;
 
     public int MouseX;
     public int MouseY;
@@ -78,13 +83,17 @@ public class Player : Entity
 
     public void Draw()
     {
-        // draw player
-        DrawCircle((int)PositionX, (int)PositionY, 20, Color.Red);
+        //if it's you
+        Color drawColor = Color.White;
+        //if it's the past
+        //drawColor = ColorAlpha(Color.White, 0.5f);
 
-        // draw a arrow pointing in player direction 40 pixels long
-        int arrowX = (int)(PositionX - 40 * Math.Cos(Direction * Math.PI / 180));
-        int arrowY = (int)(PositionY - 40 * Math.Sin(Direction * Math.PI / 180));
-        Raylib.DrawLine((int)PositionX, (int)PositionY, arrowX, arrowY, Color.Red);
+        DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
+        Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+        Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+        System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+        DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
     }
 
     public void AcquireTarget(Entity target)

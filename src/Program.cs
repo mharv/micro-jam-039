@@ -11,7 +11,6 @@ namespace BalanceOfTime;
 
 class Program
 {
-
     public static void Main()
     {
         InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Hello World");
