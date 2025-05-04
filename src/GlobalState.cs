@@ -10,7 +10,7 @@ public class GlobalState
     public GlobalState()
     {
         Player player = new Player(0, 0, 0, EntityType.PresentPlayer);
-        Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
+        Enemy enemy = new Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, GlobalVariables.GameDifficulty);
 
 
         player.EntityType = EntityType.PresentPlayer;
@@ -74,7 +74,7 @@ public class GlobalState
     public void RestartGame()
     {
         Player = new Player(0, 0, 0, EntityType.PresentPlayer);
-        Enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
+        Enemy = new Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, GlobalVariables.GameDifficulty);
         Player.EntityType = EntityType.PresentPlayer;
         Enemy.EntityType = EntityType.Enemy;
 

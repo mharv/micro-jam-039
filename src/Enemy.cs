@@ -38,30 +38,27 @@ public class Enemy : Entity
         switch (difficulty)
         {
             case Difficulty.Easy:
-                DifficultySettings = new DifficultySettings
-                {
-                    AttackInterval = 40,
-                    DirectionTrackingSpeed = 5,
-                    ProjectileSpeed = 3
-                };
+                DifficultySettings.AttackInterval = 40;
+                DifficultySettings.DirectionTrackingSpeed = 5;
+                DifficultySettings.ProjectileSpeed = 3;
                 break;
             case Difficulty.Medium:
-                DifficultySettings = new DifficultySettings
-                {
-                    AttackInterval = 24,
-                    DirectionTrackingSpeed = 8,
-                    ProjectileSpeed = 7
-                };
+                DifficultySettings.AttackInterval = 24;
+                DifficultySettings.DirectionTrackingSpeed = 8;
+                DifficultySettings.ProjectileSpeed = 7;
                 break;
             case Difficulty.Hard:
-                DifficultySettings = new DifficultySettings
-                {
-                    AttackInterval = 14,
-                    DirectionTrackingSpeed = 12,
-                    ProjectileSpeed = 10
-                };
+                DifficultySettings.AttackInterval = 14;
+                DifficultySettings.DirectionTrackingSpeed = 12;
+                DifficultySettings.ProjectileSpeed = 10;
+                break;
+            case Difficulty.Chaotic:
+                DifficultySettings.AttackInterval = 7;
+                DifficultySettings.DirectionTrackingSpeed = 6;
+                DifficultySettings.ProjectileSpeed = 15;
                 break;
         }
+
 
         Taunts = new List<string>();
         Taunts.Add("\"I will grind you to dust!\"");
@@ -110,8 +107,10 @@ public class Enemy : Entity
         }
     }
 
-    public void Attack(int currentFrame, GlobalState gloablState)
+    public void Attack(int currentFrame, GlobalState globalState)
     {
+
+        Console.WriteLine($"DifficultySettings: {DifficultySettings.AttackInterval} {DifficultySettings.DirectionTrackingSpeed} {DifficultySettings.ProjectileSpeed}");
         if (currentFrame % DifficultySettings.AttackInterval == 0)
         {
             EnemyAttackType attackType = AttackQueue.Dequeue();
@@ -128,14 +127,14 @@ public class Enemy : Entity
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                             ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                             {
-                                new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
+                                new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                             });
                         }
                     }
@@ -148,32 +147,32 @@ public class Enemy : Entity
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * time_between_projectiles))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * time_between_projectiles].ToList();
-                            existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                             ProjectileSchedule[currentFrame + i * time_between_projectiles] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * time_between_projectiles, new Projectile[]
                             {
-                                new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
+                                new Projectile(PositionX, PositionY, Direction, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                             });
                         }
                     }
                     break;
                 case EnemyAttackType.LargeProjectile:
-                    gloablState.FloatingTextList.Add(new FloatingText(PositionX, PositionY, Taunts[new Random().Next(0, Taunts.Count)], 16, Color.White, 180, 1.0f, 0.0f));
+                    globalState.FloatingTextList.Add(new FloatingText(PositionX, PositionY, Taunts[new Random().Next(0, Taunts.Count)], 16, Color.White, 180, 1.0f, 0.0f));
                     // Implement large projectile attack logic
                     if (ProjectileSchedule.ContainsKey(currentFrame))
                     {
                         var existingProjectiles = ProjectileSchedule[currentFrame].ToList();
-                        existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed));
+                        existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed));
                         ProjectileSchedule[currentFrame] = existingProjectiles.ToArray();
                     }
                     else
                     {
                         ProjectileSchedule.Add(currentFrame, new Projectile[]
                         {
-                            new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed),
+                            new Projectile(PositionX, PositionY, Direction, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed),
                         });
                     }
                     break;
@@ -187,14 +186,14 @@ public class Enemy : Entity
                             if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                             {
                                 var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                                existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
+                                existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                                 ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                             }
                             else
                             {
                                 ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                                 {
-                                    new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
+                                    new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                                 });
                             }
                         }
