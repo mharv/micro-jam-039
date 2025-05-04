@@ -60,7 +60,7 @@ public class Player : Entity
     private Texture2D TrapIcon;
     private Texture2D WallIcon;
 
-    public int MaxHealth;
+    public int MaxHealth = 100;
     public int MouseX;
     public int MouseY;
     public Entity? Target;
@@ -78,7 +78,6 @@ public class Player : Entity
     public float ShootDistance;
     public bool rightButtonPressed;
     public bool Die = false;
-
 
     public void ReadInputs(GlobalState globalState)
     {

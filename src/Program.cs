@@ -172,6 +172,7 @@ class Program
                     globalState.CurrentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, globalState.CurrentFrame));
 
 
+                    Console.WriteLine(globalState.Player.Health);
                     // CHECK IF DEAD
                     if (globalState.Player.Health <= 0)
                     {
