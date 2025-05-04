@@ -29,6 +29,7 @@ public class Player : Entity
         Radius = 20;
         ShootDistance = Radius + 10.0f;
         HitDuration = 5;
+        Die = false;
     }
 
     private Texture2D WizardSprite;
@@ -52,6 +53,7 @@ public class Player : Entity
 
     public float ShootDistance;
     public bool rightButtonPressed;
+    public bool Die = false;
 
 
     public void ReadInputs(GlobalState globalState)
@@ -109,7 +111,7 @@ public class Player : Entity
         }
     }
 
-    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<PastTrap> pastTrapList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
     {
         // Update the hit timer
         if (Hit)
@@ -139,7 +141,7 @@ public class Player : Entity
         }
         if (rightButtonPressed)
         {
-            Place(barrierList, nonProjectileList, roundId, selectedSpell);
+            Place(barrierList, pastTrapList, nonProjectileList, roundId, selectedSpell);
         }
     }
     public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
@@ -169,26 +171,38 @@ public class Player : Entity
         }
     }
 
-    public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
+    public void Place(List<Barrier> barrierList, List<PastTrap> pastTrapList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
     {
+        var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
+        var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
+        var EndX = StartX + (float)(Math.Cos((Direction + 90) * Math.PI / 180) * -80);
+        var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
+        var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
+        var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
+
+        int circleCount = 10; // Number of circles
+        float stepX = (EndX - StartX) / circleCount;
+        float stepY = (EndY - StartY) / circleCount;
         if (selectedSpell == FutureSpellType.PastTrap)
         {
             // PlacePastTrap(barrierList, nonProjectileList, roundId);
             Console.WriteLine("Placing Past Trap");
+            PastTrap pastTrap = new PastTrap(StartX, StartY, roundId);
+            if (pastTrap.PowerBarCost <= FuturePowerBar)
+            {
+                FuturePowerBar -= pastTrap.PowerBarCost;
+                pastTrapList.Add(pastTrap);
+                nonProjectileList.Add(pastTrap);
+                Console.WriteLine($"Placed Past Trap at {StartX}, {StartY} with radius {pastTrap.Radius}");
+            }
+            else
+            {
+                return;
+            }
+
         }
         else if (selectedSpell == FutureSpellType.Barrier)
         {
-            var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
-            var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
-            var EndX = StartX + (float)(Math.Cos((Direction + 90) * Math.PI / 180) * -80);
-            var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
-            var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
-            var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
-
-            int circleCount = 10; // Number of circles
-            float stepX = (EndX - StartX) / circleCount;
-            float stepY = (EndY - StartY) / circleCount;
-
             for (int i = 0; i <= circleCount; i++)
             {
                 float circleX = StartX + stepX * i;

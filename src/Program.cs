@@ -49,10 +49,11 @@ class Program
                     globalState.Enemy.ReadInputs(globalState.CurrentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
+                    globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, globalState.PastTrapList, globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
                     globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
                     globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
+                    globalState.PastTrapList.ForEach(pastTrap => pastTrap.Update(globalState.CurrentRound.Id, globalState.NonProjectileList));
 
                     TimeSlice[] currentFrameTimeSlices = [];
                     foreach (var round in globalState.GameHistory.Rounds)
@@ -69,7 +70,10 @@ class Program
                     var zippedPlayersAndTimeSlices = globalState.PastPlayers.Zip(currentFrameTimeSlices, (player, timeSlice) => new { player, timeSlice });
                     foreach (var pair in zippedPlayersAndTimeSlices)
                     {
-                        pair.player.UpdatePast(globalState.CurrentFrame, globalState.ProjectileList, pair.timeSlice);
+                        if (!pair.player.Die)
+                        {
+                            pair.player.UpdatePast(globalState.CurrentFrame, globalState.ProjectileList, pair.timeSlice);
+                        }
                     }
 
                     // remove any projectiles on die list
@@ -119,6 +123,22 @@ class Program
                     {
                         globalState.BarrierList.Remove((Entities.Barrier)entity);
                         globalState.NonProjectileList.Remove((Entities.Barrier)entity);
+                    }
+                    globalState.KillList.Clear();
+
+                    // remove any barriers on die list
+                    foreach (Entities.PastTrap pastTrap in globalState.PastTrapList)
+                    {
+                        if (pastTrap.Die)
+                        {
+                            globalState.KillList.Add(pastTrap);
+                            continue;
+                        }
+                    }
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        globalState.PastTrapList.Remove((Entities.PastTrap)entity);
+                        globalState.NonProjectileList.Remove((Entities.PastTrap)entity);
                     }
                     globalState.KillList.Clear();
 
@@ -199,7 +219,10 @@ class Program
                 {
                     foreach (var player in globalState.PastPlayers)
                     {
-                        player.Draw();
+                        if (!player.Die)
+                        {
+                            player.Draw();
+                        }
                     }
                     if (globalState.CurrentPhase != GamePhase.Transition)
                     {
@@ -216,6 +239,11 @@ class Program
                 foreach (Entities.Barrier barrier in globalState.BarrierList)
                 {
                     barrier.Draw();
+                }
+
+                foreach (PastTrap pastTrap in globalState.PastTrapList)
+                {
+                    pastTrap.Draw();
                 }
 
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);

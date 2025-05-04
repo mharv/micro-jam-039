@@ -34,6 +34,7 @@ public class GlobalState
         CurrentFrame = 0;
         ProjectileList = new List<Projectile>();
         BarrierList = new List<Barrier>();
+        PastTrapList = new List<PastTrap>();
         KillList = new List<Entity>();
 
 
@@ -50,6 +51,7 @@ public class GlobalState
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
     public List<Barrier> BarrierList = new List<Barrier>();
+    public List<PastTrap> PastTrapList = new List<PastTrap>();
     public List<Entity> NonProjectileList = new List<Entity>();
     public List<FloatingText> FloatingTextList = new List<FloatingText>();
     public List<Entity> KillList = new List<Entity>();
@@ -86,6 +88,7 @@ public class GlobalState
         CurrentFrame = 0;
         ProjectileList.Clear();
         BarrierList.Clear();
+        PastTrapList.Clear();
         GameHistory = new GameHistory();
         KillList.Clear();
         PastPlayers = [];
