@@ -159,7 +159,7 @@ class Program
                     }
                     break;
                 case GamePhase.GameOver:
-                    if (IsMouseButtonPressed(MouseButton.Left))
+                    if (IsMouseButtonPressed(MouseButton.Middle))
                     {
                         // reset game
                         globalState.RestartGame();
@@ -167,7 +167,7 @@ class Program
 
                     BeginDrawing();
                     ClearBackground(GlobalVariables.BackgroundColor);
-                    DrawText($"Game over...\n Score: {globalState.Score}\nPress Left mouse button to replay", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.White);
+                    DrawText($"Game over...\n Score: {globalState.Score}\nPress Middle mouse button to replay", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.White);
                     EndDrawing();
                     break;
                 default:
