@@ -11,10 +11,25 @@ public class Player : Entity
     // constructor
     public Player(float positionX = 0.0f, float positionY = 0.0f, int direction = 0, EntityType entityType = EntityType.PastPlayer)
     {
-        WizardSprite = LoadTexture("assets/wizard.png");
-        WeaponSprite = LoadTexture("assets/weapon.png");
-        ProjectileSprite = LoadTexture("assets/fireball.png");
-        BadProjectileSprite = LoadTexture("assets/badfireball.png");
+        if (entityType == EntityType.PastPlayer)
+        {
+            BadWizardSprite = LoadTexture("assets/badwizard.png");
+            BadWeaponSprite = LoadTexture("assets/badweapon.png");
+            BadProjectileSprite = LoadTexture("assets/badfireball.png");
+            BadEffectSprite = LoadTexture("assets/badfireballhit.png");
+        }
+
+        if (entityType == EntityType.PresentPlayer)
+        {
+            WizardSprite = LoadTexture("assets/wizard.png");
+            WeaponSprite = LoadTexture("assets/weapon.png");
+            ProjectileSprite = LoadTexture("assets/fireball.png");
+            EffectSprite = LoadTexture("assets/fireballhit.png");
+            FireballIcon = LoadTexture("assets/fireballicon.png");
+            TrapIcon = LoadTexture("assets/trapicon.png");
+            WallIcon = LoadTexture("assets/wallicon.png");
+        }
+
         PositionX = positionX;
         PositionY = positionY;
         MouseX = 0;
@@ -22,7 +37,8 @@ public class Player : Entity
         Target = null;
         Direction = direction;
         MoveSpeed = 5;
-        Health = 100;
+        MaxHealth = 100;
+        Health = MaxHealth;
         FuturePowerBar = 0;
         FuturePowerMax = 100;
         EntityType = entityType;
@@ -34,9 +50,17 @@ public class Player : Entity
 
     private Texture2D WizardSprite;
     private Texture2D WeaponSprite;
+    private Texture2D BadWizardSprite;
+    private Texture2D BadWeaponSprite;
     private Texture2D ProjectileSprite;
     private Texture2D BadProjectileSprite;
+    private Texture2D EffectSprite;
+    private Texture2D BadEffectSprite;
+    private Texture2D FireballIcon;
+    private Texture2D TrapIcon;
+    private Texture2D WallIcon;
 
+    public int MaxHealth;
     public int MouseX;
     public int MouseY;
     public Entity? Target;
@@ -163,11 +187,11 @@ public class Player : Entity
 
         if (EntityType == EntityType.PresentPlayer)
         {
-            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, 3));
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, EffectSprite, 3, 4, 20));
         }
         else
         {
-            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, BadProjectileSprite, 3));
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, BadProjectileSprite, BadEffectSprite, 3, 4, 20));
         }
     }
 
@@ -237,14 +261,44 @@ public class Player : Entity
         if (EntityType == EntityType.PastPlayer)
         {
             drawColor = ColorAlpha(drawColor, 0.5f);
+            DrawTexture(BadWizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
+
+            Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+            DrawTexturePro(BadWeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
         }
+        else
+        {
 
-        DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
-        Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
-        Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
-        System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+            DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
 
-        DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
+            Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+            DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
+        }
+    }
+
+    public void DrawUI(FutureSpellType selectedSpell)
+    {
+        //Magic Number Heaven
+        int healthWidth = (int)((float)238 * (float)Health / (float)MaxHealth);
+        int powerWidth = (int)((float)238 * (float)FuturePowerBar / (float)FuturePowerMax);
+        DrawRectangle(65, 753, healthWidth, 30, ColorFromHSV(345, 0.85f, 0.85f));
+        DrawRectangle(497, 753, powerWidth, 30, ColorFromHSV(150, 0.89f, 0.60f));
+
+        DrawTexture(FireballIcon, 336, 720, Color.White);
+        if (selectedSpell == FutureSpellType.Barrier)
+        {
+            DrawTexture(WallIcon, 400, 720, Color.White);
+        }
+        if (selectedSpell == FutureSpellType.PastTrap)
+        {
+            DrawTexture(TrapIcon, 400, 720, Color.White);
+        }
     }
 
     public void AcquireTarget(Entity target)

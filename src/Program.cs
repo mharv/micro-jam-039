@@ -13,7 +13,6 @@ class Program
 {
     public static void Main()
     {
-
         InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
         SetTargetFPS(60);
 
@@ -51,7 +50,7 @@ class Program
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, globalState.PastTrapList, globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
-                    globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
+                    globalState.Enemy.Update(deltaTime, globalState);
                     globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
                     globalState.PastTrapList.ForEach(pastTrap => pastTrap.Update(globalState.CurrentRound.Id, globalState.NonProjectileList));
 
@@ -86,6 +85,15 @@ class Program
                         }
                         projectile.Update(deltaTime, globalState);
                     }
+                    foreach (HitEffect hitEffect in globalState.HitEffectList)
+                    {
+                        if (hitEffect.Die)
+                        {
+                            globalState.KillList.Add(hitEffect);
+                            continue;
+                        }
+                        hitEffect.Update(deltaTime, globalState);
+                    }
 
                     foreach (FloatingText damageNumber in globalState.FloatingTextList)
                     {
@@ -106,6 +114,10 @@ class Program
                         if (entity is FloatingText floatingText)
                         {
                             globalState.FloatingTextList.Remove(floatingText);
+                        }
+                        if (entity is HitEffect hitEffect)
+                        {
+                            globalState.HitEffectList.Remove(hitEffect);
                         }
                     }
                     globalState.KillList.Clear();
@@ -246,7 +258,16 @@ class Program
                     pastTrap.Draw();
                 }
 
+                foreach (HitEffect hitEffect in globalState.HitEffectList)
+                {
+                    hitEffect.Draw();
+                }
+
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);
+
+                globalState.Player.DrawUI(globalState.FutureSpellTypeSelected);
+
+                DrawTexture(globalState.ForegroundIcons, 0, 0, Color.White);
 
                 foreach (FloatingText floatingText in globalState.FloatingTextList)
                 {
