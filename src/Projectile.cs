@@ -74,8 +74,10 @@ public class Projectile : Entity
         CurrentSpeed = BaseSpeed;
     }
 
-    public void Update(float deltaTime, Entity[] nonProjectileList, GlobalState globalState)
+    public void Update(float deltaTime, GlobalState globalState)
     {
+        Entity[] nonProjectileList = globalState.NonProjectileList.ToArray();
+        List<FloatingText> floatingTextList = globalState.FloatingTextList;
         // Animation Logic
         AnimFramesCounter++;
         if (AnimFramesCounter >= (60 / AnimationSpeed))
@@ -144,7 +146,7 @@ public class Projectile : Entity
                 if (entity.EntityType == EntityType.PresentPlayer)
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
-                    entity.TakeDamage(Damage);
+                    entity.TakeDamage(Damage, floatingTextList);
                     Die = true;
                     break;
                 }
@@ -152,7 +154,7 @@ public class Projectile : Entity
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now
-                    entity.TakeDamage(Damage);
+                    entity.TakeDamage(Damage, floatingTextList);
                     globalState.IncreaseScore(Damage);
                     Die = true;
                     break;

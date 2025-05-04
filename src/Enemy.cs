@@ -1,6 +1,7 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using Types;
+using Globals;
 
 namespace Entities;
 
@@ -16,6 +17,12 @@ public class Enemy : Entity
 {
     Queue<EnemyAttackType> AttackQueue = new Queue<EnemyAttackType>();
     Texture2D ProjectileSprite;
+    public Entity? Target;
+    public int Direction = 0;
+    public DifficultySettings DifficultySettings;
+    public Dictionary<int, Projectile[]> ProjectileSchedule = new Dictionary<int, Projectile[]>();
+    public int HitDuration;
+    public List<string> Taunts;
 
     public Enemy(int positionX, int positionY, Difficulty difficulty)
     {
@@ -49,10 +56,16 @@ public class Enemy : Entity
                 break;
         }
 
+        Taunts = new List<string>();
+        Taunts.Add("\"I will grind you to dust!\"");
+        Taunts.Add("\"You will die scum!\"");
+        Taunts.Add("\"Your ancestors will feel your agony!\"");
+
         PositionX = positionX;
         PositionY = positionY;
         Target = null;
         Radius = 40;
+        HitDuration = 5;
 
         AttackQueue.Enqueue(EnemyAttackType.Spiral);
         AttackQueue.Enqueue(EnemyAttackType.FastBurst);
@@ -83,7 +96,7 @@ public class Enemy : Entity
         }
     }
 
-    public void Attack(int currentFrame)
+    public void Attack(int currentFrame, GlobalState gloablState)
     {
         if (currentFrame % DifficultySettings.AttackInterval == 0)
         {
@@ -134,6 +147,7 @@ public class Enemy : Entity
                     }
                     break;
                 case EnemyAttackType.LargeProjectile:
+                    gloablState.FloatingTextList.Add(new FloatingText(PositionX, PositionY, Taunts[new Random().Next(0, Taunts.Count)], 16, Color.White, 180, 1.0f, 0.0f));
                     // Implement large projectile attack logic
                     if (ProjectileSchedule.ContainsKey(currentFrame))
                     {
@@ -176,9 +190,6 @@ public class Enemy : Entity
         }
     }
 
-    public Entity? Target;
-    public int Direction = 0;
-    public DifficultySettings DifficultySettings;
 
     public void ReadInputs(int currentFrame, Player player)
     {
@@ -186,11 +197,17 @@ public class Enemy : Entity
         UpdateDirection(currentFrame);
     }
 
-    public Dictionary<int, Projectile[]> ProjectileSchedule = new Dictionary<int, Projectile[]>();
-
-
     public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList)
     {
+        if (Hit)
+        {
+            HitTimer++;
+            if (HitTimer >= HitDuration)
+            {
+                Hit = false;
+            }
+        }
+
         foreach (var proj in ProjectileSchedule)
         {
             if (proj.Key == currentFrame)
@@ -206,7 +223,14 @@ public class Enemy : Entity
 
     public void Draw()
     {
-        DrawCircle((int)PositionX, (int)PositionY, Radius, Color.Blue);
+        Color drawColor = Color.Blue;
+
+        if (Hit)
+        {
+            drawColor = Color.Red;
+        }
+
+        DrawCircle((int)PositionX, (int)PositionY, Radius, drawColor);
 
         // draw a arrow pointing in player direction 40 pixels long
         int arrowX = (int)(PositionX - 60 * Math.Cos(Direction * Math.PI / 180));
