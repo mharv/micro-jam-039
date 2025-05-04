@@ -13,6 +13,8 @@ public class Player : Entity
     {
         WizardSprite = LoadTexture("assets/wizard.png");
         WeaponSprite = LoadTexture("assets/weapon.png");
+        BadWizardSprite = LoadTexture("assets/badwizard.png");
+        BadWeaponSprite = LoadTexture("assets/badweapon.png");
         ProjectileSprite = LoadTexture("assets/fireball.png");
         BadProjectileSprite = LoadTexture("assets/badfireball.png");
         EffectSprite = LoadTexture("assets/fireballhit.png");
@@ -37,6 +39,8 @@ public class Player : Entity
 
     private Texture2D WizardSprite;
     private Texture2D WeaponSprite;
+    private Texture2D BadWizardSprite;
+    private Texture2D BadWeaponSprite;
     private Texture2D ProjectileSprite;
     private Texture2D BadProjectileSprite;
     private Texture2D EffectSprite;
@@ -242,14 +246,25 @@ public class Player : Entity
         if (EntityType == EntityType.PastPlayer)
         {
             drawColor = ColorAlpha(drawColor, 0.5f);
+            DrawTexture(BadWizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
+
+            Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+            DrawTexturePro(BadWeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
         }
+        else
+        {
 
-        DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
-        Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
-        Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
-        System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+            DrawTexture(WizardSprite, (int)PositionX - (WizardSprite.Width / 2), (int)PositionY - (WizardSprite.Height / 2), drawColor);
 
-        DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
+            Rectangle sourceRect = new Rectangle(0, 0, WeaponSprite.Width, WeaponSprite.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, WeaponSprite.Width, WeaponSprite.Height);
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(WeaponSprite.Width / 2, WeaponSprite.Height / 2);
+
+            DrawTexturePro(WeaponSprite, sourceRect, destRect, origin, Direction, drawColor);
+        }
     }
 
     public void AcquireTarget(Entity target)
