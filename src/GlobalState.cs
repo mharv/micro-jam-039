@@ -9,7 +9,7 @@ public class GlobalState
 {
     public GlobalState()
     {
-        Player player = new Player();
+        Player player = new Player(0, 0, 0, EntityType.PresentPlayer);
         Entities.Enemy enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
 
 
@@ -40,6 +40,7 @@ public class GlobalState
 
         Background = Raylib.LoadTexture("assets/background.png");
         Foreground = Raylib.LoadTexture("assets/foreground.png");
+        ForegroundIcons = Raylib.LoadTexture("assets/foregroundicons.png");
     }
 
     public GameHistory GameHistory { get; set; } = new GameHistory();
@@ -48,6 +49,7 @@ public class GlobalState
     public int CurrentFrame { get; set; } = 0;
     public Texture2D Background;
     public Texture2D Foreground;
+    public Texture2D ForegroundIcons;
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
     public List<Barrier> BarrierList = new List<Barrier>();
@@ -71,7 +73,7 @@ public class GlobalState
 
     public void RestartGame()
     {
-        Player = new Player();
+        Player player = new Player(0, 0, 0, EntityType.PresentPlayer);
         Enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
         Player.EntityType = EntityType.PresentPlayer;
         Enemy.EntityType = EntityType.Enemy;

@@ -13,7 +13,6 @@ class Program
 {
     public static void Main()
     {
-
         InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
         SetTargetFPS(60);
 
@@ -264,8 +263,11 @@ class Program
                     hitEffect.Draw();
                 }
 
-
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);
+
+                globalState.Player.DrawUI(globalState.FutureSpellTypeSelected);
+
+                DrawTexture(globalState.ForegroundIcons, 0, 0, Color.White);
 
                 foreach (FloatingText floatingText in globalState.FloatingTextList)
                 {
