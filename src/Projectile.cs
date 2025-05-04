@@ -169,7 +169,7 @@ public class Projectile : Entity
                     Die = true;
                     break;
                 }
-                if (entity.EntityType == EntityType.Barrier && OriginEntityType == EntityType.Enemy)
+                if (entity.EntityType == EntityType.FutureSpell && OriginEntityType == EntityType.Enemy)
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now

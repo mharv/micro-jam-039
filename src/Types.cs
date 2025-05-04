@@ -21,13 +21,17 @@ public enum EnemyAttackType
     LargeProjectile,
     Shotgun
 }
-
+public enum FutureSpellType
+{
+    Barrier,
+    PastTrap
+}
 public enum EntityType
 {
     PresentPlayer,
     Enemy,
     Projectile,
     PastPlayer,
-    Barrier,
+    FutureSpell,
     Text,
 }

@@ -1,3 +1,4 @@
+using Globals;
 using Raylib_cs;
 using Recording;
 using Types;
@@ -53,10 +54,29 @@ public class Player : Entity
     public bool rightButtonPressed;
 
 
-    public void ReadInputs()
+    public void ReadInputs(GlobalState globalState)
     {
         MouseX = GetMouseX();
         MouseY = GetMouseY();
+
+        var ScrollWheelMove = GetMouseWheelMove();
+        // scroll through FutureSpellSelected enums
+        if (ScrollWheelMove > 0)
+        {
+            globalState.FutureSpellTypeSelected++;
+            if (globalState.FutureSpellTypeSelected > FutureSpellType.PastTrap) // Assuming MaxSpell is the highest enum value
+            {
+                globalState.FutureSpellTypeSelected = FutureSpellType.Barrier; // Assuming MinSpell is the lowest enum value
+            }
+        }
+        else if (ScrollWheelMove < 0)
+        {
+            globalState.FutureSpellTypeSelected--;
+            if (globalState.FutureSpellTypeSelected < FutureSpellType.Barrier) // Assuming MinSpell is the lowest enum value
+            {
+                globalState.FutureSpellTypeSelected = FutureSpellType.PastTrap; // Assuming MaxSpell is the highest enum value
+            }
+        }
 
         if (Target != null)
         {
@@ -89,7 +109,7 @@ public class Player : Entity
         }
     }
 
-    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
     {
         // Update the hit timer
         if (Hit)
@@ -119,7 +139,7 @@ public class Player : Entity
         }
         if (rightButtonPressed)
         {
-            Place(barrierList, nonProjectileList, roundId);
+            Place(barrierList, nonProjectileList, roundId, selectedSpell);
         }
     }
     public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
@@ -149,35 +169,44 @@ public class Player : Entity
         }
     }
 
-    public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
+    public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId, FutureSpellType selectedSpell)
     {
-        var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
-        var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
-        var EndX = StartX + (float)(Math.Cos((Direction + 90) * Math.PI / 180) * -80);
-        var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
-        var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
-        var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
-
-        int circleCount = 10; // Number of circles
-        float stepX = (EndX - StartX) / circleCount;
-        float stepY = (EndY - StartY) / circleCount;
-
-        for (int i = 0; i <= circleCount; i++)
+        if (selectedSpell == FutureSpellType.PastTrap)
         {
-            float circleX = StartX + stepX * i;
-            float circleY = StartY + stepY * i;
-            Barrier barrier = new Barrier(circleX, circleY, roundId);
-            if (barrier.PowerBarCost <= FuturePowerBar)
+            // PlacePastTrap(barrierList, nonProjectileList, roundId);
+            Console.WriteLine("Placing Past Trap");
+        }
+        else if (selectedSpell == FutureSpellType.Barrier)
+        {
+            var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
+            var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
+            var EndX = StartX + (float)(Math.Cos((Direction + 90) * Math.PI / 180) * -80);
+            var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
+            var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
+            var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
+
+            int circleCount = 10; // Number of circles
+            float stepX = (EndX - StartX) / circleCount;
+            float stepY = (EndY - StartY) / circleCount;
+
+            for (int i = 0; i <= circleCount; i++)
             {
-                FuturePowerBar -= barrier.PowerBarCost;
-                barrierList.Add(barrier);
-                nonProjectileList.Add(barrier);
-            }
-            else
-            {
-                return;
+                float circleX = StartX + stepX * i;
+                float circleY = StartY + stepY * i;
+                Barrier barrier = new Barrier(circleX, circleY, roundId);
+                if (barrier.PowerBarCost <= FuturePowerBar)
+                {
+                    FuturePowerBar -= barrier.PowerBarCost;
+                    barrierList.Add(barrier);
+                    nonProjectileList.Add(barrier);
+                }
+                else
+                {
+                    return;
+                }
             }
         }
+
     }
 
     public void Draw()

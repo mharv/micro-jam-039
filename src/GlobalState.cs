@@ -59,6 +59,7 @@ public class GlobalState
     public int Score { get; set; }
     public int RoundDurationFrames { get; set; } = 0;
     public int TransitionDurationFrames { get; set; } = 0;
+    public FutureSpellType FutureSpellTypeSelected = FutureSpellType.Barrier;
 
     public void IncreaseScore(int amount)
     {
@@ -95,16 +96,17 @@ public class GlobalState
 
     public string DebugString(GamePhase currentPhase, int currentFrame)
     {
-        return $"\tX: {Player.PositionX,-5}\n" +
-                $"\tY: {Player.PositionY,-5}\n" +
-                $"\tLeft: {Player.leftButtonState,-5}\n" +
-                $"\tMiddle: {Player.middleButtonState,-5}\n" +
-                $"\tRight: {Player.rightButtonState,-5}\n" +
-                $"\tDirection: {Player.Direction,-5}\n" +
-                $"\tRound: {currentPhase,-5}\n" +
-                $"\tTimer: {currentFrame,-5}\n" +
-                $"\tScore: {Score,-5}\n" +
-                $"\tHealth: {Player.Health,-5}\n" +
-                $"\tFuture power: {Player.FuturePowerBar,-5}\n";
+        // return $"\tX: {Player.PositionX,-5}\n" +
+        //         $"\tY: {Player.PositionY,-5}\n" +
+        //         $"\tLeft: {Player.leftButtonState,-5}\n" +
+        //         $"\tMiddle: {Player.middleButtonState,-5}\n" +
+        //         $"\tRight: {Player.rightButtonState,-5}\n" +
+        //         $"\tDirection: {Player.Direction,-5}\n" +
+        //         $"\tRound: {currentPhase,-5}\n" +
+        //         $"\tTimer: {currentFrame,-5}\n" +
+        //         $"\tScore: {Score,-5}\n" +
+        //         $"\tHealth: {Player.Health,-5}\n" +
+        //         $"\tFuture power: {Player.FuturePowerBar,-5}\n";
+        return $"\n\n\n\tSpell: {FutureSpellTypeSelected,-5}\n";
     }
 }

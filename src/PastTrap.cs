@@ -5,9 +5,9 @@ using Types;
 namespace Entities;
 
 
-public class Barrier : Entity
+public class PastTrap : Entity
 {
-    public Barrier(float locX, float locY, int roundId)
+    public PastTrap(float locX, float locY, int roundId)
     {
         PositionX = locX;
         PositionY = locY;
@@ -18,7 +18,7 @@ public class Barrier : Entity
     public bool Status = false;
     public bool Die { get; set; } = false;
     public int RoundCast { get; set; } = 0;
-    public int PowerBarCost { get; set; } = 30;
+    public int PowerBarCost { get; set; } = 40;
 
     public void Update(int Round)
     {

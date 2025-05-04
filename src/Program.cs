@@ -45,11 +45,11 @@ class Program
                     EndDrawing();
                     break;
                 case GamePhase.Round:
-                    globalState.Player.ReadInputs();
+                    globalState.Player.ReadInputs(globalState);
                     globalState.Enemy.ReadInputs(globalState.CurrentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, globalState.CurrentRound.Id);
+                    globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
                     globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
                     globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
@@ -189,9 +189,9 @@ class Program
                 DrawTexture(globalState.Background, 0, 0, backgroundColor);
 
                 // Text
-                // Color textColor = Color.White;
-                // string text = globalState.DebugString(globalState.CurrentPhase, globalState.CurrentFrame);
-                // DrawText(text, 12, 12, 20, textColor);
+                Color textColor = Color.White;
+                string text = globalState.DebugString(globalState.CurrentPhase, globalState.CurrentFrame);
+                DrawText(text, 12, 12, 20, textColor);
 
                 // Draw entities
                 globalState.Player.Draw();
