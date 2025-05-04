@@ -215,7 +215,6 @@ public class Enemy : Entity
     {
         float roundPercent = (float)globalState.CurrentFrame / (float)globalState.RoundDurationFrames;
         CurrentAnimFrame = (int)(AnimFrames * roundPercent);
-        Console.WriteLine(CurrentAnimFrame);
 
         if (Hit)
         {

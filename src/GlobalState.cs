@@ -26,8 +26,8 @@ public class GlobalState
         PastPlayers = [];
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 10 * 60; // 3 seconds
-        TransitionDurationFrames = 3 * 60; // 3 seconds
+        RoundDurationFrames = 60 * 60; // 60 seconds
+        TransitionDurationFrames = 6 * 60; // 6 seconds
         GameHistory = new GameHistory();
         CurrentRound = new Round();
         TimeSliceCounter = 0;
@@ -41,6 +41,15 @@ public class GlobalState
         Background = Raylib.LoadTexture("assets/background.png");
         Foreground = Raylib.LoadTexture("assets/foreground.png");
         ForegroundIcons = Raylib.LoadTexture("assets/foregroundicons.png");
+
+        Bgm1 = Raylib.LoadMusicStream("assets/bgm1.ogg");
+        Bgm2 = Raylib.LoadMusicStream("assets/bgm2.ogg");
+        Bgm3 = Raylib.LoadMusicStream("assets/bgm3.ogg");
+        Bgm4 = Raylib.LoadMusicStream("assets/bgm4.ogg");
+        Bgm5 = Raylib.LoadMusicStream("assets/bgm5.ogg");
+        BgmTransition = Raylib.LoadMusicStream("assets/reverse.ogg");
+
+        CurrentBgm = Bgm1;
     }
 
     public GameHistory GameHistory { get; set; } = new GameHistory();
@@ -65,6 +74,13 @@ public class GlobalState
     public int RoundDurationFrames { get; set; } = 0;
     public int TransitionDurationFrames { get; set; } = 0;
     public FutureSpellType FutureSpellTypeSelected = FutureSpellType.Barrier;
+    public Music Bgm1;
+    public Music Bgm2;
+    public Music Bgm3;
+    public Music Bgm4;
+    public Music Bgm5;
+    public Music BgmTransition;
+    public Music CurrentBgm;
 
     public void IncreaseScore(int amount)
     {

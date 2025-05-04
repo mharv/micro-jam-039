@@ -14,10 +14,12 @@ class Program
     public static void Main()
     {
         InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
+        InitAudioDevice();
         SetTargetFPS(60);
 
         GlobalState globalState = new GlobalState();
         globalState.CurrentPhase = GamePhase.Menu;
+
 
         while (!WindowShouldClose())
         {
@@ -31,7 +33,7 @@ class Program
                 case GamePhase.Menu:
                     if (IsMouseButtonPressed(MouseButton.Left))
                     {
-                        globalState.CurrentPhase = GamePhase.Round;
+                        globalState.CurrentPhase = GamePhase.RoundStart;
                         GlobalVariables.BackgroundColor = Color.White;
                         globalState.CurrentFrame = 0;
                         globalState.Player.PositionX = GetMouseX();
@@ -43,11 +45,38 @@ class Program
                     DrawText("Click to start", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.Black);
                     EndDrawing();
                     break;
+                case GamePhase.RoundStart:
+                    Console.WriteLine(globalState.CurrentRound.Id);
+                    Raylib.StopMusicStream(globalState.CurrentBgm);
+                    if (globalState.CurrentRound.Id == 1)
+                    {
+                        globalState.CurrentBgm = globalState.Bgm1;
+                    }
+                    if (globalState.CurrentRound.Id == 2)
+                    {
+                        globalState.CurrentBgm = globalState.Bgm2;
+                    }
+                    if (globalState.CurrentRound.Id == 3)
+                    {
+                        globalState.CurrentBgm = globalState.Bgm3;
+                    }
+                    if (globalState.CurrentRound.Id == 4)
+                    {
+                        globalState.CurrentBgm = globalState.Bgm4;
+                    }
+                    if (globalState.CurrentRound.Id >= 5)
+                    {
+                        globalState.CurrentBgm = globalState.Bgm5;
+                    }
+                    Raylib.PlayMusicStream(globalState.CurrentBgm);
+                    globalState.CurrentPhase = GamePhase.Round;
+                    break;
                 case GamePhase.Round:
                     globalState.Player.ReadInputs(globalState);
                     globalState.Enemy.ReadInputs(globalState.CurrentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
+                    Raylib.UpdateMusicStream(globalState.CurrentBgm);
                     globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, globalState.PastTrapList, globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
                     globalState.Enemy.Update(deltaTime, globalState);
@@ -156,7 +185,7 @@ class Program
 
                     if (globalState.CurrentFrame >= globalState.RoundDurationFrames)
                     {
-                        globalState.CurrentPhase = GamePhase.Transition;
+                        globalState.CurrentPhase = GamePhase.TransitionStart;
                         GlobalVariables.BackgroundColor = Color.Green;
                         globalState.GameHistory.AppendToRounds(globalState.CurrentRound);
                         var startX = globalState.CurrentRound.History[0].PlayerPositionX;
@@ -171,8 +200,6 @@ class Program
                     // Append to history
                     globalState.CurrentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, globalState.CurrentFrame));
 
-
-                    Console.WriteLine(globalState.Player.Health);
                     // CHECK IF DEAD
                     if (globalState.Player.Health <= 0)
                     {
@@ -180,10 +207,17 @@ class Program
                         GlobalVariables.BackgroundColor = Color.DarkPurple;
                     }
                     break;
+                case GamePhase.TransitionStart:
+                    Raylib.StopMusicStream(globalState.CurrentBgm);
+                    globalState.CurrentBgm = globalState.BgmTransition;
+                    Raylib.PlayMusicStream(globalState.CurrentBgm);
+                    globalState.CurrentPhase = GamePhase.Transition;
+                    break;
                 case GamePhase.Transition:
+                    Raylib.UpdateMusicStream(globalState.CurrentBgm);
                     if (globalState.CurrentFrame >= globalState.TransitionDurationFrames)
                     {
-                        globalState.CurrentPhase = GamePhase.Round;
+                        globalState.CurrentPhase = GamePhase.RoundStart;
                         GlobalVariables.BackgroundColor = Color.White;
                         globalState.CurrentRound = new Round(globalState.CurrentRound.Id);
                         globalState.CurrentRound.Id = globalState.CurrentRound.Id;
@@ -283,6 +317,12 @@ class Program
         string filePath = "game_history.txt";
         globalState.GameHistory.SaveToFile(filePath);
         Console.WriteLine($"Game history saved to {filePath}");
+        UnloadMusicStream(globalState.Bgm1);
+        UnloadMusicStream(globalState.Bgm2);
+        UnloadMusicStream(globalState.Bgm3);
+        UnloadMusicStream(globalState.Bgm4);
+        UnloadMusicStream(globalState.Bgm5);
+        UnloadMusicStream(globalState.BgmTransition);
         CloseWindow();
     }
 }
