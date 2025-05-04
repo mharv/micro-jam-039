@@ -1,5 +1,11 @@
 namespace Types;
-public enum GamePhase { Menu, Round, Transition };
+public enum GamePhase
+{
+    Menu,
+    Round,
+    Transition,
+    GameOver
+};
 public enum Difficulty
 {
     Easy,

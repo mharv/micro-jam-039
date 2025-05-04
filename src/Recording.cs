@@ -1,6 +1,6 @@
 namespace Recording;
 
-class GameHistory
+public class GameHistory
 {
     public Round[] Rounds = [];
     public void AppendToRounds(Round round)
@@ -39,7 +39,7 @@ public class TimeSlice
     public float PlayerPositionY { get; set; }
     public int PlayerDirection { get; set; }
 }
-class Round
+public class Round
 {
     public Round(int pastId = 0)
     {
