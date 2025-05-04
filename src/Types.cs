@@ -2,7 +2,9 @@ namespace Types;
 public enum GamePhase
 {
     Menu,
+    RoundStart,
     Round,
+    TransitionStart,
     Transition,
     GameOver
 };
