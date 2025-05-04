@@ -221,11 +221,6 @@ class Program
                 ClearBackground(GlobalVariables.BackgroundColor);
                 DrawTexture(globalState.Background, 0, 0, backgroundColor);
 
-                // Text
-                Color textColor = Color.White;
-                string text = globalState.DebugString(globalState.CurrentPhase, globalState.CurrentFrame);
-                DrawText(text, 12, 12, 20, textColor);
-
                 // Draw entities
                 globalState.Player.Draw();
                 if (globalState.GameHistory.Rounds.Length > 0)
@@ -266,6 +261,11 @@ class Program
 
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);
 
+                string roundText = "Round: " + globalState.CurrentRound.Id.ToString();
+                string scoreText = "Score: " + globalState.Score.ToString();
+                //Some cool magic numbers here
+                DrawText(roundText, 68, 20, 30, Color.White);
+                DrawText(scoreText, 500, 20, 30, Color.White);
                 globalState.Player.DrawUI(globalState.FutureSpellTypeSelected);
 
                 DrawTexture(globalState.ForegroundIcons, 0, 0, Color.White);
