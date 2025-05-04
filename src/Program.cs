@@ -223,6 +223,7 @@ class Program
                         globalState.CurrentRound.Id = globalState.CurrentRound.Id;
 
                         globalState.CurrentFrame = 0;
+                        globalState.Update();
                     }
                     break;
                 case GamePhase.GameOver:

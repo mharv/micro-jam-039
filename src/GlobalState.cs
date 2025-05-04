@@ -87,6 +87,30 @@ public class GlobalState
         Score += amount;
     }
 
+    public void Update()
+    {
+        if (CurrentRound.Id == 1)
+        {
+            Enemy.AdjustDifficulty(Difficulty.VeryEasy);
+        }
+        else if (CurrentRound.Id == 2)
+        {
+            Enemy.AdjustDifficulty(Difficulty.Easy);
+        }
+        else if (CurrentRound.Id == 3)
+        {
+            Enemy.AdjustDifficulty(Difficulty.Medium);
+        }
+        else if (CurrentRound.Id == 4)
+        {
+            Enemy.AdjustDifficulty(Difficulty.Hard);
+        }
+        else if (CurrentRound.Id > 4)
+        {
+            Enemy.AdjustDifficulty(Difficulty.Chaotic);
+        }
+    }
+
     public void RestartGame()
     {
         Player = new Player(0, 0, 0, EntityType.PresentPlayer);
@@ -116,7 +140,7 @@ public class GlobalState
         GlobalVariables.BackgroundColor = Color.Red;
     }
 
-    public string DebugString(GamePhase currentPhase, int currentFrame)
+    public string DebugString()
     {
         // return $"\tX: {Player.PositionX,-5}\n" +
         //         $"\tY: {Player.PositionY,-5}\n" +
@@ -129,6 +153,6 @@ public class GlobalState
         //         $"\tScore: {Score,-5}\n" +
         //         $"\tHealth: {Player.Health,-5}\n" +
         //         $"\tFuture power: {Player.FuturePowerBar,-5}\n";
-        return $"\n\n\n\tSpell: {FutureSpellTypeSelected,-5}\n";
+        return $"\n\n\n\tDifficulty: {GlobalVariables.GameDifficulty,-5}\n";
     }
 }

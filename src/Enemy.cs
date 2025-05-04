@@ -12,7 +12,6 @@ public class DifficultySettings
     public int ProjectileSpeed { get; set; }
 }
 
-
 public class Enemy : Entity
 {
     Queue<EnemyAttackType> AttackQueue = new Queue<EnemyAttackType>();
@@ -34,36 +33,17 @@ public class Enemy : Entity
     public Enemy(int positionX, int positionY, Difficulty difficulty)
     {
         DifficultySettings = new DifficultySettings();
-
-        switch (difficulty)
-        {
-            case Difficulty.Easy:
-                DifficultySettings.AttackInterval = 40;
-                DifficultySettings.DirectionTrackingSpeed = 5;
-                DifficultySettings.ProjectileSpeed = 3;
-                break;
-            case Difficulty.Medium:
-                DifficultySettings.AttackInterval = 24;
-                DifficultySettings.DirectionTrackingSpeed = 8;
-                DifficultySettings.ProjectileSpeed = 7;
-                break;
-            case Difficulty.Hard:
-                DifficultySettings.AttackInterval = 14;
-                DifficultySettings.DirectionTrackingSpeed = 12;
-                DifficultySettings.ProjectileSpeed = 10;
-                break;
-            case Difficulty.Chaotic:
-                DifficultySettings.AttackInterval = 7;
-                DifficultySettings.DirectionTrackingSpeed = 6;
-                DifficultySettings.ProjectileSpeed = 15;
-                break;
-        }
-
+        SetDifficultySettings(difficulty);
 
         Taunts = new List<string>();
         Taunts.Add("\"I will grind you to dust!\"");
-        Taunts.Add("\"You will die scum!\"");
         Taunts.Add("\"Your ancestors will feel your agony!\"");
+        Taunts.Add("\"Your bones will be scattered through time!\"");
+        Taunts.Add("\"You will be nothing but a forgotten whisper in history!\"");
+        Taunts.Add("\"Even your descendants will tremble at the thought of me!\"");
+        Taunts.Add("\"I’ll break your spirit, and your children will curse your name!\"");
+        Taunts.Add("\"This moment will echo in eternity… as your end!\"");
+        Taunts.Add("\"You will leave no legacy, only ashes in the wind!\"");
 
         PositionX = positionX;
         PositionY = positionY;
@@ -87,7 +67,6 @@ public class Enemy : Entity
         CurrentAnimFrame = 0;
     }
 
-
     public void AcquireTarget(Entity target)
     {
         Target = target;
@@ -107,12 +86,50 @@ public class Enemy : Entity
         }
     }
 
+    public void AdjustDifficulty(Difficulty difficulty)
+    {
+        SetDifficultySettings(difficulty);
+    }
+
+    private void SetDifficultySettings(Difficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case Difficulty.VeryEasy:
+                DifficultySettings.AttackInterval = 50;
+                DifficultySettings.DirectionTrackingSpeed = 4;
+                DifficultySettings.ProjectileSpeed = 2;
+                break;
+            case Difficulty.Easy:
+                DifficultySettings.AttackInterval = 40;
+                DifficultySettings.DirectionTrackingSpeed = 5;
+                DifficultySettings.ProjectileSpeed = 3;
+                break;
+            case Difficulty.Medium:
+                DifficultySettings.AttackInterval = 35;
+                DifficultySettings.DirectionTrackingSpeed = 6;
+                DifficultySettings.ProjectileSpeed = 4;
+                break;
+            case Difficulty.Hard:
+                DifficultySettings.AttackInterval = 30;
+                DifficultySettings.DirectionTrackingSpeed = 7;
+                DifficultySettings.ProjectileSpeed = 5;
+                break;
+            case Difficulty.Chaotic:
+                DifficultySettings.AttackInterval = 25;
+                DifficultySettings.DirectionTrackingSpeed = 8;
+                DifficultySettings.ProjectileSpeed = 8;
+                break;
+        }
+    }
+
     public void Attack(int currentFrame, GlobalState globalState)
     {
-
         Console.WriteLine($"DifficultySettings: {DifficultySettings.AttackInterval} {DifficultySettings.DirectionTrackingSpeed} {DifficultySettings.ProjectileSpeed}");
         if (currentFrame % DifficultySettings.AttackInterval == 0)
         {
+            // shuffle the attack queue
+            AttackQueue = new Queue<EnemyAttackType>(AttackQueue.OrderBy(x => Guid.NewGuid()));
             EnemyAttackType attackType = AttackQueue.Dequeue();
             Console.WriteLine($"ATTACK__________________________________________{attackType}");
             AttackQueue.Enqueue(attackType);
@@ -121,9 +138,10 @@ public class Enemy : Entity
             {
                 case EnemyAttackType.Spiral:
                     // Implement spiral attack logic
+                    bool reverse = new Random().Next(0, 2) == 0; // Randomly decide whether to reverse
                     foreach (var i in Enumerable.Range(0, 12))
                     {
-                        int adjustedDirection = Direction + (i * (360 / 12));
+                        int adjustedDirection = Direction + (reverse ? -i * (360 / 12) : i * (360 / 12));
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
@@ -202,7 +220,6 @@ public class Enemy : Entity
             }
         }
     }
-
 
     public void ReadInputs(int currentFrame, Player player)
     {
