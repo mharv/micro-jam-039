@@ -3,6 +3,7 @@ namespace Globals;
 using Raylib_cs;
 using Entities;
 using Types;
+using Recording;
 
 public class GlobalState
 {
@@ -27,11 +28,23 @@ public class GlobalState
         Score = 0;
         RoundDurationFrames = 10 * 60; // 3 seconds
         TransitionDurationFrames = 3 * 60; // 3 seconds
+        GameHistory = new GameHistory();
+        CurrentRound = new Round();
+        TimeSliceCounter = 0;
+        CurrentFrame = 0;
+        ProjectileList = new List<Projectile>();
+        BarrierList = new List<Barrier>();
+        KillList = new List<Entity>();
+
 
         Background = Raylib.LoadTexture("assets/background.png");
         Foreground = Raylib.LoadTexture("assets/foreground.png");
     }
 
+    public GameHistory GameHistory { get; set; } = new GameHistory();
+    public Round CurrentRound { get; set; } = new Round();
+    public int TimeSliceCounter { get; set; } = 0;
+    public int CurrentFrame { get; set; } = 0;
     public Texture2D Background;
     public Texture2D Foreground;
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
@@ -50,6 +63,34 @@ public class GlobalState
     public void IncreaseScore(int amount)
     {
         Score += amount;
+    }
+
+    public void RestartGame()
+    {
+        Player = new Player();
+        Enemy = new Entities.Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, Types.Difficulty.Easy);
+        Player.EntityType = EntityType.PresentPlayer;
+        Enemy.EntityType = EntityType.Enemy;
+
+        NonProjectileList.Clear();
+        NonProjectileList.Add(Player);
+        NonProjectileList.Add(Enemy);
+
+        Player.AcquireTarget(Enemy);
+        Enemy.AcquireTarget(Player);
+
+        Score = 0;
+        CurrentRound = new Round();
+        TimeSliceCounter = 0;
+        CurrentFrame = 0;
+        ProjectileList.Clear();
+        BarrierList.Clear();
+        GameHistory = new GameHistory();
+        KillList.Clear();
+        PastPlayers = [];
+        CurrentPhase = GamePhase.Menu;
+
+        GlobalVariables.BackgroundColor = Color.Red;
     }
 
     public string DebugString(GamePhase currentPhase, int currentFrame)

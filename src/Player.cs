@@ -73,8 +73,9 @@ public class Player : Entity
         rightButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Right);
     }
 
-    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList)
+    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
     {
+        // Update the hit timer
         if (Hit)
         {
             HitTimer++;
@@ -102,7 +103,7 @@ public class Player : Entity
         }
         if (rightButtonPressed)
         {
-            Place(barrierList);
+            Place(barrierList, nonProjectileList, roundId);
         }
     }
     public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
@@ -132,7 +133,7 @@ public class Player : Entity
         }
     }
 
-    public void Place(List<Barrier> barrierList)
+    public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
     {
         var StartX = PositionX + (float)(Math.Cos(Direction * Math.PI / 180) * -80);
         var StartY = PositionY + (float)(Math.Sin(Direction * Math.PI / 180) * -80);
@@ -140,7 +141,6 @@ public class Player : Entity
         var EndY = StartY + (float)(Math.Sin((Direction + 90) * Math.PI / 180) * -80);
         var Length = (float)Math.Sqrt(Math.Pow(EndX - StartX, 2) + Math.Pow(EndY - StartY, 2));
         var Angle = (float)(Math.Atan2(EndY - StartY, EndX - StartX) * 180 / Math.PI);
-        EntityType = EntityType.Barrier;
 
         int circleCount = 10; // Number of circles
         float stepX = (EndX - StartX) / circleCount;
@@ -150,8 +150,10 @@ public class Player : Entity
         {
             float circleX = StartX + stepX * i;
             float circleY = StartY + stepY * i;
-            Barrier barrier = new Barrier(circleX, circleY);
+            Barrier barrier = new Barrier(circleX, circleY, roundId);
             barrierList.Add(barrier);
+            nonProjectileList.Add(barrier);
+
         }
     }
 

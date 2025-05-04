@@ -13,26 +13,18 @@ class Program
 {
     public static void Main()
     {
-        InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Hello World");
+
+        InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
         SetTargetFPS(60);
 
         GlobalState globalState = new GlobalState();
-
-        // Timer variables
         globalState.CurrentPhase = GamePhase.Menu;
-
-        GameHistory gameHistory = new GameHistory();
-        Round currentRound = new Round();
-        int roundId = currentRound.Id;
-        int timeSliceCounter = 0;
-
-        int currentFrame = 0;
 
         while (!WindowShouldClose())
         {
             // get delta time
             float deltaTime = GetFrameTime();
-            currentFrame++;
+            globalState.CurrentFrame++;
 
             // Read Input and Update
             switch (globalState.CurrentPhase)
@@ -42,7 +34,7 @@ class Program
                     {
                         globalState.CurrentPhase = GamePhase.Round;
                         GlobalVariables.BackgroundColor = Color.White;
-                        currentFrame = 0;
+                        globalState.CurrentFrame = 0;
                         globalState.Player.PositionX = GetMouseX();
                         globalState.Player.PositionY = GetMouseY();
                     }
@@ -54,19 +46,20 @@ class Program
                     break;
                 case GamePhase.Round:
                     globalState.Player.ReadInputs();
-                    globalState.Enemy.ReadInputs(currentFrame, globalState.Player);
+                    globalState.Enemy.ReadInputs(globalState.CurrentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    globalState.Player.Update(deltaTime, currentFrame, globalState.ProjectileList, globalState.BarrierList);
-                    globalState.Enemy.Attack(currentFrame, globalState);
-                    globalState.Enemy.Update(deltaTime, currentFrame, globalState.ProjectileList);
+                    globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, globalState.CurrentRound.Id);
+                    globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
+                    globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
+                    globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
 
                     TimeSlice[] currentFrameTimeSlices = [];
-                    foreach (var round in gameHistory.Rounds)
+                    foreach (var round in globalState.GameHistory.Rounds)
                     {
                         foreach (var timeSlice in round.History)
                         {
-                            if (timeSlice.Time == currentFrame)
+                            if (timeSlice.Time == globalState.CurrentFrame)
                             {
                                 currentFrameTimeSlices = currentFrameTimeSlices.Append(timeSlice).ToArray();
                             }
@@ -76,10 +69,10 @@ class Program
                     var zippedPlayersAndTimeSlices = globalState.PastPlayers.Zip(currentFrameTimeSlices, (player, timeSlice) => new { player, timeSlice });
                     foreach (var pair in zippedPlayersAndTimeSlices)
                     {
-                        pair.player.UpdatePast(currentFrame, globalState.ProjectileList, pair.timeSlice);
+                        pair.player.UpdatePast(globalState.CurrentFrame, globalState.ProjectileList, pair.timeSlice);
                     }
 
-
+                    // remove any projectiles on die list
                     foreach (Projectile projectile in globalState.ProjectileList)
                     {
                         if (projectile.Die)
@@ -111,42 +104,77 @@ class Program
                             globalState.FloatingTextList.Remove(floatingText);
                         }
                     }
-
                     globalState.KillList.Clear();
 
-                    if (currentFrame >= globalState.RoundDurationFrames)
+                    // remove any barriers on die list
+                    foreach (Entities.Barrier barrier in globalState.BarrierList)
+                    {
+                        if (barrier.Die)
+                        {
+                            globalState.KillList.Add(barrier);
+                            continue;
+                        }
+                    }
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        globalState.BarrierList.Remove((Entities.Barrier)entity);
+                        globalState.NonProjectileList.Remove((Entities.Barrier)entity);
+                    }
+                    globalState.KillList.Clear();
+
+                    if (globalState.CurrentFrame >= globalState.RoundDurationFrames)
                     {
                         globalState.CurrentPhase = GamePhase.Transition;
                         GlobalVariables.BackgroundColor = Color.Green;
-                        gameHistory.AppendToRounds(currentRound);
-                        var startX = currentRound.History[0].PlayerPositionX;
-                        var startY = currentRound.History[0].PlayerPositionY;
-                        var direction = currentRound.History[0].PlayerDirection;
+                        globalState.GameHistory.AppendToRounds(globalState.CurrentRound);
+                        var startX = globalState.CurrentRound.History[0].PlayerPositionX;
+                        var startY = globalState.CurrentRound.History[0].PlayerPositionY;
+                        var direction = globalState.CurrentRound.History[0].PlayerDirection;
                         var tempPastPlayer = new Player(startX, startY, direction);
                         globalState.PastPlayers = globalState.PastPlayers.Append(tempPastPlayer).ToArray();
                         globalState.NonProjectileList = globalState.NonProjectileList.Append(tempPastPlayer).ToList();
-                        timeSliceCounter = 0;
-                        currentFrame = 0;
+                        globalState.TimeSliceCounter = 0;
+                        globalState.CurrentFrame = 0;
                     }
                     // Append to history
-                    currentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, currentFrame));
+                    globalState.CurrentRound.AppendToHistory(new TimeSlice(globalState.Player.PositionX, globalState.Player.PositionY, globalState.Player.Direction, globalState.Player.leftButtonPressed, globalState.CurrentFrame));
+
+
+                    // CHECK IF DEAD
+                    if (globalState.Player.Health <= 0)
+                    {
+                        globalState.CurrentPhase = GamePhase.GameOver;
+                        GlobalVariables.BackgroundColor = Color.DarkPurple;
+                    }
                     break;
                 case GamePhase.Transition:
-                    if (currentFrame >= globalState.TransitionDurationFrames)
+                    if (globalState.CurrentFrame >= globalState.TransitionDurationFrames)
                     {
                         globalState.CurrentPhase = GamePhase.Round;
                         GlobalVariables.BackgroundColor = Color.White;
-                        currentRound = new Round(roundId);
-                        roundId = currentRound.Id;
+                        globalState.CurrentRound = new Round(globalState.CurrentRound.Id);
+                        globalState.CurrentRound.Id = globalState.CurrentRound.Id;
 
-                        currentFrame = 0;
+                        globalState.CurrentFrame = 0;
                     }
+                    break;
+                case GamePhase.GameOver:
+                    if (IsMouseButtonPressed(MouseButton.Left))
+                    {
+                        // reset game
+                        globalState.RestartGame();
+                    }
+
+                    BeginDrawing();
+                    ClearBackground(GlobalVariables.BackgroundColor);
+                    DrawText($"Game over...\n Score: {globalState.Score}\nPress Left mouse button to replay", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.White);
+                    EndDrawing();
                     break;
                 default:
                     break;
             }
             // Draw
-            if (globalState.CurrentPhase != GamePhase.Menu)
+            if (globalState.CurrentPhase != GamePhase.Menu && globalState.CurrentPhase != GamePhase.GameOver)
             {
                 BeginDrawing();
 
@@ -162,12 +190,12 @@ class Program
 
                 // Text
                 Color textColor = Color.White;
-                string text = globalState.DebugString(globalState.CurrentPhase, currentFrame);
+                string text = globalState.DebugString(globalState.CurrentPhase, globalState.CurrentFrame);
                 DrawText(text, 12, 12, 20, textColor);
 
                 // Draw entities
                 globalState.Player.Draw();
-                if (gameHistory.Rounds.Length > 0)
+                if (globalState.GameHistory.Rounds.Length > 0)
                 {
                     foreach (var player in globalState.PastPlayers)
                     {
@@ -175,7 +203,7 @@ class Program
                     }
                     if (globalState.CurrentPhase != GamePhase.Transition)
                     {
-                        timeSliceCounter++;
+                        globalState.TimeSliceCounter++;
                     }
 
                 }
@@ -203,7 +231,7 @@ class Program
 
         // Save game history to file
         string filePath = "game_history.txt";
-        gameHistory.SaveToFile(filePath);
+        globalState.GameHistory.SaveToFile(filePath);
         Console.WriteLine($"Game history saved to {filePath}");
         CloseWindow();
     }
