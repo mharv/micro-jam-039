@@ -27,6 +27,11 @@ public class HitEffect : Entity
         CurrentAnimFrame = 0;
     }
 
+    public HitEffect Clone()
+    {
+        return new HitEffect(PositionX, PositionY, Direction, EffectSprite, AnimationFrames, AnimationSpeed);
+    }
+
     public void Update(float deltaTime, GlobalState globalState)
     {
         if (!Die)

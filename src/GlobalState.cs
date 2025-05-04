@@ -11,6 +11,7 @@ public class GlobalState
     {
         Background = Raylib.LoadTexture("assets/background.png");
         Foreground = Raylib.LoadTexture("assets/foreground.png");
+        Hourglass = Raylib.LoadTexture("assets/hourglass.png");
         ForegroundIcons = Raylib.LoadTexture("assets/foregroundicons.png");
 
         Bgm1 = Raylib.LoadMusicStream("assets/bgm1.ogg");
@@ -49,7 +50,7 @@ public class GlobalState
         PastPlayers = [];
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 60 * 60; // 60 seconds
+        RoundDurationFrames = 10 * 60; // 60 seconds
         TransitionDurationFrames = 6 * 60; // 6 seconds
         GameHistory = new GameHistory();
         CurrentRound = new Round();
@@ -60,6 +61,7 @@ public class GlobalState
         PastTrapList = new List<PastTrap>();
         KillList = new List<Entity>();
         HitEffectList = new List<HitEffect>();
+        TransitionEffect = new HitEffect(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, 0, Hourglass, 15, 3);
     }
 
     public GameHistory GameHistory { get; set; } = new GameHistory();
@@ -68,6 +70,7 @@ public class GlobalState
     public int CurrentFrame { get; set; } = 0;
     public Texture2D Background;
     public Texture2D Foreground;
+    public Texture2D Hourglass;
     public Texture2D ForegroundIcons;
     public GamePhase CurrentPhase { get; set; } = GamePhase.Menu;
     public List<Projectile> ProjectileList = new List<Projectile>();
@@ -84,6 +87,8 @@ public class GlobalState
     public int RoundDurationFrames { get; set; } = 0;
     public int TransitionDurationFrames { get; set; } = 0;
     public FutureSpellType FutureSpellTypeSelected = FutureSpellType.Barrier;
+
+    public HitEffect TransitionEffect;
     //Music
     public Music Bgm1;
     public Music Bgm2;
