@@ -50,7 +50,7 @@ public class GlobalState
         PastPlayers = [];
         Enemy = enemy;
         Score = 0;
-        RoundDurationFrames = 10 * 60; // 60 seconds
+        RoundDurationFrames = 60 * 60; // 60 seconds
         TransitionDurationFrames = 6 * 60; // 6 seconds
         GameHistory = new GameHistory();
         CurrentRound = new Round();
