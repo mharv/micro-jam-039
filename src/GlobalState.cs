@@ -19,7 +19,6 @@ public class GlobalState
         NonProjectileList.Add(player);
         NonProjectileList.Add(enemy);
 
-
         player.AcquireTarget(enemy);
         enemy.AcquireTarget(player);
 
@@ -52,6 +51,7 @@ public class GlobalState
     public List<Projectile> ProjectileList = new List<Projectile>();
     public List<Barrier> BarrierList = new List<Barrier>();
     public List<Entity> NonProjectileList = new List<Entity>();
+    public List<FloatingText> FloatingTextList = new List<FloatingText>();
     public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
     public Player[] PastPlayers { get; set; } = [];

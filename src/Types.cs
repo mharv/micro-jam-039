@@ -29,4 +29,5 @@ public enum EntityType
     Projectile,
     PastPlayer,
     Barrier,
+    Text,
 }

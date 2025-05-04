@@ -50,7 +50,7 @@ class Program
 
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, nonProjectileList: globalState.NonProjectileList, globalState.CurrentRound.Id);
-                    globalState.Enemy.Attack(globalState.CurrentFrame);
+                    globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
                     globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
                     globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
 
@@ -80,12 +80,29 @@ class Program
                             globalState.KillList.Add(projectile);
                             continue;
                         }
-                        projectile.Update(deltaTime, globalState.NonProjectileList.ToArray(), globalState);
+                        projectile.Update(deltaTime, globalState);
+                    }
+
+                    foreach (FloatingText damageNumber in globalState.FloatingTextList)
+                    {
+                        if (damageNumber.Die)
+                        {
+                            globalState.KillList.Add(damageNumber);
+                            continue;
+                        }
+                        damageNumber.Update(deltaTime);
                     }
 
                     foreach (Entity entity in globalState.KillList)
                     {
-                        globalState.ProjectileList.Remove((Projectile)entity);
+                        if (entity is Projectile projectile)
+                        {
+                            globalState.ProjectileList.Remove(projectile);
+                        }
+                        if (entity is FloatingText floatingText)
+                        {
+                            globalState.FloatingTextList.Remove(floatingText);
+                        }
                     }
                     globalState.KillList.Clear();
 
@@ -202,6 +219,12 @@ class Program
                 }
 
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);
+
+                foreach (FloatingText floatingText in globalState.FloatingTextList)
+                {
+                    floatingText.Draw();
+                }
+
                 EndDrawing();
             }
         }

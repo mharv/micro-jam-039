@@ -13,6 +13,7 @@ public class Player : Entity
         WizardSprite = LoadTexture("assets/wizard.png");
         WeaponSprite = LoadTexture("assets/weapon.png");
         ProjectileSprite = LoadTexture("assets/fireball.png");
+        BadProjectileSprite = LoadTexture("assets/badfireball.png");
         PositionX = positionX;
         PositionY = positionY;
         MouseX = 0;
@@ -30,6 +31,7 @@ public class Player : Entity
     private Texture2D WizardSprite;
     private Texture2D WeaponSprite;
     private Texture2D ProjectileSprite;
+    private Texture2D BadProjectileSprite;
 
     public int MouseX;
     public int MouseY;
@@ -121,7 +123,14 @@ public class Player : Entity
         float forwardX = MathF.Cos(radians) * -ShootDistance;
         float forwardY = MathF.Sin(radians) * -ShootDistance;
 
-        projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, 3));
+        if (EntityType == EntityType.PresentPlayer)
+        {
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, 3));
+        }
+        else
+        {
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, BadProjectileSprite, 3));
+        }
     }
 
     public void Place(List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
@@ -155,7 +164,6 @@ public class Player : Entity
 
         if (Hit)
         {
-            Console.WriteLine("I'm gunna be red");
             drawColor = Color.Red;
         }
 
