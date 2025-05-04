@@ -10,9 +10,11 @@ public enum GamePhase
 };
 public enum Difficulty
 {
+    VeryEasy,
     Easy,
     Medium,
-    Hard
+    Hard,
+    Chaotic,
 }
 
 
