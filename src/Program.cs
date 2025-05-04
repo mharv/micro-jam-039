@@ -150,7 +150,7 @@ class Program
 
                     BeginDrawing();
                     ClearBackground(GlobalVariables.BackgroundColor);
-                    DrawText($"Game over...\n Score: {globalState.Score}", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.White);
+                    DrawText($"Game over...\n Score: {globalState.Score}\nPress Left mouse button to replay", GlobalVariables.WindowSizeX / 2 - 50, GlobalVariables.WindowSizeY / 2 - 10, 20, Color.White);
                     EndDrawing();
                     break;
                 default:
