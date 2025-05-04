@@ -36,7 +36,7 @@ public class GlobalState
         BarrierList = new List<Barrier>();
         PastTrapList = new List<PastTrap>();
         KillList = new List<Entity>();
-
+        HitEffectList = new List<HitEffect>();
 
         Background = Raylib.LoadTexture("assets/background.png");
         Foreground = Raylib.LoadTexture("assets/foreground.png");
@@ -54,6 +54,7 @@ public class GlobalState
     public List<PastTrap> PastTrapList = new List<PastTrap>();
     public List<Entity> NonProjectileList = new List<Entity>();
     public List<FloatingText> FloatingTextList = new List<FloatingText>();
+    public List<HitEffect> HitEffectList = new List<HitEffect>();
     public List<Entity> KillList = new List<Entity>();
     public Player Player { get; set; }
     public Player[] PastPlayers { get; set; } = [];

@@ -17,12 +17,16 @@ public class Enemy : Entity
 {
     Queue<EnemyAttackType> AttackQueue = new Queue<EnemyAttackType>();
     Texture2D ProjectileSprite;
+    Texture2D EffectSprite;
+    Texture2D BigProjectileSprite;
+    Texture2D BigEffectSprite;
     public Entity? Target;
     public int Direction = 0;
     public DifficultySettings DifficultySettings;
     public Dictionary<int, Projectile[]> ProjectileSchedule = new Dictionary<int, Projectile[]>();
     public int HitDuration;
     public List<string> Taunts;
+    public int ProjectileAnimSpeed = 20;
 
     public Enemy(int positionX, int positionY, Difficulty difficulty)
     {
@@ -74,6 +78,10 @@ public class Enemy : Entity
 
         EntityType = EntityType.Enemy;
         ProjectileSprite = LoadTexture("assets/badfireball.png");
+        BigProjectileSprite = LoadTexture("assets/bigfireball.png");
+        EffectSprite = LoadTexture("assets/badfireballhit.png");
+        BigEffectSprite = LoadTexture("assets/bigfireballhit.png");
+        ProjectileAnimSpeed = 20;
     }
 
 
@@ -114,14 +122,14 @@ public class Enemy : Entity
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                             ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                             {
-                                new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3),
+                                new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                             });
                         }
                     }
@@ -134,14 +142,14 @@ public class Enemy : Entity
                         if (ProjectileSchedule.ContainsKey(currentFrame + i * time_between_projectiles))
                         {
                             var existingProjectiles = ProjectileSchedule[currentFrame + i * time_between_projectiles].ToList();
-                            existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3));
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                             ProjectileSchedule[currentFrame + i * time_between_projectiles] = existingProjectiles.ToArray();
                         }
                         else
                         {
                             ProjectileSchedule.Add(currentFrame + i * time_between_projectiles, new Projectile[]
                             {
-                                new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3),
+                                new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                             });
                         }
                     }
@@ -152,14 +160,14 @@ public class Enemy : Entity
                     if (ProjectileSchedule.ContainsKey(currentFrame))
                     {
                         var existingProjectiles = ProjectileSchedule[currentFrame].ToList();
-                        existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy));
+                        existingProjectiles.Add(new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed));
                         ProjectileSchedule[currentFrame] = existingProjectiles.ToArray();
                     }
                     else
                     {
                         ProjectileSchedule.Add(currentFrame, new Projectile[]
                         {
-                            new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy),
+                            new Projectile(PositionX, PositionY, Direction, 0.0f, 5.0f, 0.0f, 60, 10, 180, EntityType.Enemy, BigProjectileSprite, BigEffectSprite, 4, 7, ProjectileAnimSpeed),
                         });
                     }
                     break;
@@ -173,14 +181,14 @@ public class Enemy : Entity
                             if (ProjectileSchedule.ContainsKey(currentFrame + i * 2))
                             {
                                 var existingProjectiles = ProjectileSchedule[currentFrame + i * 2].ToList();
-                                existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3));
+                                existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
                                 ProjectileSchedule[currentFrame + i * 2] = existingProjectiles.ToArray();
                             }
                             else
                             {
                                 ProjectileSchedule.Add(currentFrame + i * 2, new Projectile[]
                                 {
-                                    new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, 3),
+                                    new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, 5.0f, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                                 });
                             }
                         }

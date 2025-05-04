@@ -15,6 +15,9 @@ public class Player : Entity
         WeaponSprite = LoadTexture("assets/weapon.png");
         ProjectileSprite = LoadTexture("assets/fireball.png");
         BadProjectileSprite = LoadTexture("assets/badfireball.png");
+        EffectSprite = LoadTexture("assets/fireballhit.png");
+        BadEffectSprite = LoadTexture("assets/badfireballhit.png");
+
         PositionX = positionX;
         PositionY = positionY;
         MouseX = 0;
@@ -36,6 +39,8 @@ public class Player : Entity
     private Texture2D WeaponSprite;
     private Texture2D ProjectileSprite;
     private Texture2D BadProjectileSprite;
+    private Texture2D EffectSprite;
+    private Texture2D BadEffectSprite;
 
     public int MouseX;
     public int MouseY;
@@ -163,11 +168,11 @@ public class Player : Entity
 
         if (EntityType == EntityType.PresentPlayer)
         {
-            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, 3));
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, EffectSprite, 3, 4, 20));
         }
         else
         {
-            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, BadProjectileSprite, 3));
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, BadProjectileSprite, BadEffectSprite, 3, 4, 20));
         }
     }
 

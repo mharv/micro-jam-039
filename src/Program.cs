@@ -86,6 +86,15 @@ class Program
                         }
                         projectile.Update(deltaTime, globalState);
                     }
+                    foreach (HitEffect hitEffect in globalState.HitEffectList)
+                    {
+                        if (hitEffect.Die)
+                        {
+                            globalState.KillList.Add(hitEffect);
+                            continue;
+                        }
+                        hitEffect.Update(deltaTime, globalState);
+                    }
 
                     foreach (FloatingText damageNumber in globalState.FloatingTextList)
                     {
@@ -106,6 +115,10 @@ class Program
                         if (entity is FloatingText floatingText)
                         {
                             globalState.FloatingTextList.Remove(floatingText);
+                        }
+                        if (entity is HitEffect hitEffect)
+                        {
+                            globalState.HitEffectList.Remove(hitEffect);
                         }
                     }
                     globalState.KillList.Clear();
@@ -245,6 +258,12 @@ class Program
                 {
                     pastTrap.Draw();
                 }
+
+                foreach (HitEffect hitEffect in globalState.HitEffectList)
+                {
+                    hitEffect.Draw();
+                }
+
 
                 DrawTexture(globalState.Foreground, 0, 0, Color.White);
 

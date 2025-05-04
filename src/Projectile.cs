@@ -17,12 +17,15 @@ public class Projectile : Entity
     public int FramesToLive;
     public Entity? Target;
     public Texture2D Texture;
+    public Texture2D Effect;
     public bool LoadedTexture;
     public int AnimationFrames;
     public bool Die;
     private float CurrentSpeed;
     private int AnimFramesCounter;
     private int CurrentAnimFrame;
+    private int EffectAnimFrames;
+    private int EffectAnimSpeed;
     public EntityType? OriginEntityType;
 
     // constructor
@@ -44,12 +47,14 @@ public class Projectile : Entity
         AnimationSpeed = 15;
         AnimFramesCounter = 0;
         CurrentAnimFrame = 0;
+        EffectAnimFrames = 0;
+        EffectAnimSpeed = 0;
         OriginEntityType = null;
 
         CurrentSpeed = BaseSpeed;
     }
 
-    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Texture2D texture = new Texture2D(), int frames = 1, Entity? target = null)
+    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Texture2D texture = new Texture2D(), Texture2D effect = new Texture2D(), int frames = 1, int effectAnimFrames = 1, int effectAnimSpeed = 1, Entity? target = null)
     {
         OriginEntityType = originEntityType;
         EntityType = EntityType.Projectile;
@@ -66,10 +71,13 @@ public class Projectile : Entity
         Target = target;
         Die = false;
         Texture = texture;
+        Effect = effect;
         AnimationFrames = frames;
         AnimationSpeed = 15;
         AnimFramesCounter = 0;
         CurrentAnimFrame = 0;
+        EffectAnimFrames = effectAnimFrames;
+        EffectAnimSpeed = effectAnimSpeed;
 
         CurrentSpeed = BaseSpeed;
     }
@@ -148,6 +156,7 @@ public class Projectile : Entity
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     entity.TakeDamage(Damage, floatingTextList);
                     Die = true;
+                    globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
                 if (entity.EntityType == EntityType.Enemy && OriginEntityType == EntityType.PresentPlayer)
@@ -158,6 +167,7 @@ public class Projectile : Entity
                     globalState.Player.IncreasePowerBar(Damage);
                     globalState.IncreaseScore(Damage);
                     Die = true;
+                    globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
                 if (entity.EntityType == EntityType.Enemy && OriginEntityType == EntityType.PastPlayer)
@@ -167,6 +177,7 @@ public class Projectile : Entity
                     // entity.Health -= Damage;
                     // globalState.IncreaseScore(Damage);
                     Die = true;
+                    globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
                 if (entity.EntityType == EntityType.FutureSpell && OriginEntityType == EntityType.Enemy)
@@ -178,6 +189,7 @@ public class Projectile : Entity
                     if (entity is Barrier barrier && barrier.Status)
                     {
                         barrier.Die = true;
+                        globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                         Die = true;
                     }
                     break;
