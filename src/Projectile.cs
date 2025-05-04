@@ -143,7 +143,7 @@ public class Projectile : Entity
 
             if (distance < Radius + entity.Radius)
             {
-                if (entity.EntityType == EntityType.PresentPlayer)
+                if (entity.EntityType == EntityType.PresentPlayer && OriginEntityType != EntityType.PresentPlayer)
                 {
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     entity.TakeDamage(Damage, floatingTextList);
@@ -155,6 +155,7 @@ public class Projectile : Entity
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     // this doesnt do anything for now
                     entity.TakeDamage(Damage, floatingTextList);
+                    globalState.Player.IncreasePowerBar(Damage);
                     globalState.IncreaseScore(Damage);
                     Die = true;
                     break;

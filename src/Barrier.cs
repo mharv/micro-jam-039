@@ -13,10 +13,12 @@ public class Barrier : Entity
         PositionY = locY;
         EntityType = EntityType.Barrier;
         RoundCast = roundId;
+        PowerBarCost = 5;
     }
     public bool Status = false;
     public bool Die { get; set; } = false;
     public int RoundCast { get; set; } = 0;
+    public int PowerBarCost { get; set; } = 30;
 
     public void Update(int Round)
     {

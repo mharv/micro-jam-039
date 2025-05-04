@@ -22,6 +22,8 @@ public class Player : Entity
         Direction = direction;
         MoveSpeed = 5;
         Health = 100;
+        FuturePowerBar = 0;
+        FuturePowerMax = 100;
         EntityType = entityType;
         Radius = 20;
         ShootDistance = Radius + 10.0f;
@@ -39,6 +41,8 @@ public class Player : Entity
     public int Direction;
     public float MoveSpeed;
     public int HitDuration;
+    public int FuturePowerBar = 0;
+    public int FuturePowerMax = 100;
 
     public bool leftButtonState;
     public bool leftButtonPressed;
@@ -71,6 +75,18 @@ public class Player : Entity
         middleButtonState = Raylib.IsMouseButtonDown(MouseButton.Middle);
         rightButtonState = Raylib.IsMouseButtonDown(MouseButton.Right);
         rightButtonPressed = Raylib.IsMouseButtonPressed(MouseButton.Right);
+    }
+
+    public void IncreasePowerBar(int damage)
+    {
+        if (FuturePowerBar < FuturePowerMax)
+        {
+            FuturePowerBar += damage / 5;
+        }
+        if (FuturePowerBar + (damage / 5) > FuturePowerMax)
+        {
+            FuturePowerBar = FuturePowerMax;
+        }
     }
 
     public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList, List<Barrier> barrierList, List<Entity> nonProjectileList, int roundId)
@@ -151,9 +167,16 @@ public class Player : Entity
             float circleX = StartX + stepX * i;
             float circleY = StartY + stepY * i;
             Barrier barrier = new Barrier(circleX, circleY, roundId);
-            barrierList.Add(barrier);
-            nonProjectileList.Add(barrier);
-
+            if (barrier.PowerBarCost <= FuturePowerBar)
+            {
+                FuturePowerBar -= barrier.PowerBarCost;
+                barrierList.Add(barrier);
+                nonProjectileList.Add(barrier);
+            }
+            else
+            {
+                return;
+            }
         }
     }
 

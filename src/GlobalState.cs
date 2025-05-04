@@ -104,6 +104,7 @@ public class GlobalState
                 $"\tRound: {currentPhase,-5}\n" +
                 $"\tTimer: {currentFrame,-5}\n" +
                 $"\tScore: {Score,-5}\n" +
-                $"\tHealth: {Player.Health,-5}\n";
+                $"\tHealth: {Player.Health,-5}\n" +
+                $"\tFuture power: {Player.FuturePowerBar,-5}\n";
     }
 }
