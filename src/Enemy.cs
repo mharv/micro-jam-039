@@ -261,11 +261,6 @@ public class Enemy : Entity
         {
             DrawCircle((int)PositionX, (int)PositionY, Radius, drawColor);
         }
-
-        // draw a arrow pointing in player direction 40 pixels long
-        int arrowX = (int)(PositionX - 60 * Math.Cos(Direction * Math.PI / 180));
-        int arrowY = (int)(PositionY - 60 * Math.Sin(Direction * Math.PI / 180));
-        Raylib.DrawLine((int)PositionX, (int)PositionX, arrowX, arrowY, Color.Red);
     }
 }
 
