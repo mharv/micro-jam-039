@@ -16,6 +16,7 @@ public class DifficultySettings
 public class Enemy : Entity
 {
     Queue<EnemyAttackType> AttackQueue = new Queue<EnemyAttackType>();
+    Texture2D EnemySprite;
     Texture2D ProjectileSprite;
     Texture2D EffectSprite;
     Texture2D BigProjectileSprite;
@@ -27,6 +28,8 @@ public class Enemy : Entity
     public int HitDuration;
     public List<string> Taunts;
     public int ProjectileAnimSpeed = 20;
+    public int AnimFrames = 0;
+    public int CurrentAnimFrame = 0;
 
     public Enemy(int positionX, int positionY, Difficulty difficulty)
     {
@@ -77,11 +80,14 @@ public class Enemy : Entity
         AttackQueue.Enqueue(EnemyAttackType.Shotgun);
 
         EntityType = EntityType.Enemy;
+        EnemySprite = LoadTexture("assets/badguy.png");
         ProjectileSprite = LoadTexture("assets/badfireball.png");
         BigProjectileSprite = LoadTexture("assets/bigfireball.png");
         EffectSprite = LoadTexture("assets/badfireballhit.png");
         BigEffectSprite = LoadTexture("assets/bigfireballhit.png");
         ProjectileAnimSpeed = 20;
+        AnimFrames = 10;
+        CurrentAnimFrame = 0;
     }
 
 
@@ -205,8 +211,12 @@ public class Enemy : Entity
         UpdateDirection(currentFrame);
     }
 
-    public void Update(float deltaTime, int currentFrame, List<Projectile> projectileList)
+    public void Update(float deltaTime, GlobalState globalState)
     {
+        float roundPercent = (float)globalState.CurrentFrame / (float)globalState.RoundDurationFrames;
+        CurrentAnimFrame = (int)(AnimFrames * roundPercent);
+        Console.WriteLine(CurrentAnimFrame);
+
         if (Hit)
         {
             HitTimer++;
@@ -218,27 +228,39 @@ public class Enemy : Entity
 
         foreach (var proj in ProjectileSchedule)
         {
-            if (proj.Key == currentFrame)
+            if (proj.Key == globalState.CurrentFrame)
             {
                 foreach (var projectile in proj.Value)
                 {
-                    projectileList.Add(projectile);
+                    globalState.ProjectileList.Add(projectile);
                 }
             }
         }
-        ProjectileSchedule.Remove(currentFrame);
+        ProjectileSchedule.Remove(globalState.CurrentFrame);
     }
 
     public void Draw()
     {
-        Color drawColor = Color.Blue;
+        Color drawColor = Color.White;
 
         if (Hit)
         {
             drawColor = Color.Red;
         }
 
-        DrawCircle((int)PositionX, (int)PositionY, Radius, drawColor);
+        if (EnemySprite.Id != 0)
+        {
+            int realWidth = EnemySprite.Width / AnimFrames;
+            Rectangle sourceRect = new Rectangle(CurrentAnimFrame * realWidth, 0, EnemySprite.Width / AnimFrames, EnemySprite.Height);
+            Rectangle destRect = new Rectangle(PositionX, PositionY, realWidth, EnemySprite.Height);
+
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(realWidth / 2, EnemySprite.Height / 2);
+            DrawTexturePro(EnemySprite, sourceRect, destRect, origin, 0, Color.White);
+        }
+        else
+        {
+            DrawCircle((int)PositionX, (int)PositionY, Radius, drawColor);
+        }
 
         // draw a arrow pointing in player direction 40 pixels long
         int arrowX = (int)(PositionX - 60 * Math.Cos(Direction * Math.PI / 180));

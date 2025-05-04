@@ -51,7 +51,7 @@ class Program
                     //Update Player and enemies only in round
                     globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, globalState.PastTrapList, globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
-                    globalState.Enemy.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList);
+                    globalState.Enemy.Update(deltaTime, globalState);
                     globalState.BarrierList.ForEach(barrier => barrier.Update(globalState.CurrentRound.Id));
                     globalState.PastTrapList.ForEach(pastTrap => pastTrap.Update(globalState.CurrentRound.Id, globalState.NonProjectileList));
 
