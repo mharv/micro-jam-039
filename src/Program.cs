@@ -70,6 +70,18 @@ class Program
                     }
                     Raylib.PlayMusicStream(globalState.CurrentBgm);
                     globalState.CurrentPhase = GamePhase.Round;
+                    globalState.Player.Health = globalState.Player.MaxHealth;
+                    foreach (Projectile projectile in globalState.ProjectileList)
+                    {
+                        globalState.KillList.Add(projectile);
+                    }
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        if (entity is Projectile projectile)
+                        {
+                            globalState.ProjectileList.Remove(projectile);
+                        }
+                    }
                     break;
                 case GamePhase.Round:
                     globalState.Player.ReadInputs(globalState);
@@ -212,9 +224,26 @@ class Program
                     globalState.CurrentBgm = globalState.BgmTransition;
                     Raylib.PlayMusicStream(globalState.CurrentBgm);
                     globalState.CurrentPhase = GamePhase.Transition;
+                    globalState.HitEffectList.Add(globalState.TransitionEffect.Clone());
                     break;
                 case GamePhase.Transition:
                     Raylib.UpdateMusicStream(globalState.CurrentBgm);
+                    foreach (HitEffect hitEffect in globalState.HitEffectList)
+                    {
+                        if (hitEffect.Die)
+                        {
+                            globalState.KillList.Add(hitEffect);
+                            continue;
+                        }
+                        hitEffect.Update(deltaTime, globalState);
+                    }
+                    foreach (Entity entity in globalState.KillList)
+                    {
+                        if (entity is HitEffect hitEffect)
+                        {
+                            globalState.HitEffectList.Remove(hitEffect);
+                        }
+                    }
                     if (globalState.CurrentFrame >= globalState.TransitionDurationFrames)
                     {
                         globalState.CurrentPhase = GamePhase.RoundStart;
