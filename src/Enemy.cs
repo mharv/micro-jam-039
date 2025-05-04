@@ -96,17 +96,17 @@ public class Enemy : Entity
         switch (difficulty)
         {
             case Difficulty.VeryEasy:
-                DifficultySettings.AttackInterval = 50;
+                DifficultySettings.AttackInterval = 60;
                 DifficultySettings.DirectionTrackingSpeed = 4;
                 DifficultySettings.ProjectileSpeed = 2;
                 break;
             case Difficulty.Easy:
-                DifficultySettings.AttackInterval = 40;
+                DifficultySettings.AttackInterval = 50;
                 DifficultySettings.DirectionTrackingSpeed = 5;
                 DifficultySettings.ProjectileSpeed = 3;
                 break;
             case Difficulty.Medium:
-                DifficultySettings.AttackInterval = 35;
+                DifficultySettings.AttackInterval = 40;
                 DifficultySettings.DirectionTrackingSpeed = 6;
                 DifficultySettings.ProjectileSpeed = 4;
                 break;
@@ -116,9 +116,9 @@ public class Enemy : Entity
                 DifficultySettings.ProjectileSpeed = 5;
                 break;
             case Difficulty.Chaotic:
-                DifficultySettings.AttackInterval = 25;
+                DifficultySettings.AttackInterval = 20;
                 DifficultySettings.DirectionTrackingSpeed = 8;
-                DifficultySettings.ProjectileSpeed = 8;
+                DifficultySettings.ProjectileSpeed = 6;
                 break;
         }
     }
