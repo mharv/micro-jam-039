@@ -20,7 +20,7 @@ public class GlobalState
         Bgm5 = Raylib.LoadMusicStream("assets/bgm5.ogg");
         BgmTransition = Raylib.LoadMusicStream("assets/reverse.ogg");
 
-        FireballHit = Raylib.LoadSound("assets/fireballhit.ogg");
+        FireballHit = Raylib.LoadSound("assets/fireballHit.ogg");
         ShootFireball1 = Raylib.LoadSound("assets/shootFireball.ogg");
         ShootFireball2 = Raylib.LoadSound("assets/shootFireball2.ogg");
         Spell = Raylib.LoadSound("assets/trap.ogg");
