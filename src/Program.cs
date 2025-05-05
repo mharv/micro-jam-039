@@ -13,7 +13,7 @@ namespace BalanceOfTime
 
     public partial class Program
     {
-        public static GlobalState globalState = new GlobalState();
+        public static GlobalState globalState;
 
         public static void Main()
         {
