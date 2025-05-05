@@ -18,7 +18,6 @@ namespace BalanceOfTime
         public static void Main()
         {
             InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
-            InitAudioDevice();
             SetTargetFPS(60);
             globalState = new GlobalState();
 
@@ -69,28 +68,6 @@ namespace BalanceOfTime
                     EndDrawing();
                     break;
                 case GamePhase.RoundStart:
-                    Raylib.StopMusicStream(globalState.CurrentBgm);
-                    if (globalState.CurrentRound.Id == 1)
-                    {
-                        globalState.CurrentBgm = globalState.Bgm1;
-                    }
-                    if (globalState.CurrentRound.Id == 2)
-                    {
-                        globalState.CurrentBgm = globalState.Bgm2;
-                    }
-                    if (globalState.CurrentRound.Id == 3)
-                    {
-                        globalState.CurrentBgm = globalState.Bgm3;
-                    }
-                    if (globalState.CurrentRound.Id == 4)
-                    {
-                        globalState.CurrentBgm = globalState.Bgm4;
-                    }
-                    if (globalState.CurrentRound.Id >= 5)
-                    {
-                        globalState.CurrentBgm = globalState.Bgm5;
-                    }
-                    Raylib.PlayMusicStream(globalState.CurrentBgm);
                     globalState.CurrentPhase = GamePhase.Round;
                     globalState.Player.Health = globalState.Player.MaxHealth;
                     foreach (Projectile projectile in globalState.ProjectileList)
@@ -110,7 +87,6 @@ namespace BalanceOfTime
                     globalState.Enemy.ReadInputs(globalState.CurrentFrame, globalState.Player);
 
                     //Update Player and enemies only in round
-                    Raylib.UpdateMusicStream(globalState.CurrentBgm);
                     globalState.Player.Update(deltaTime, globalState.CurrentFrame, globalState.ProjectileList, globalState.BarrierList, globalState.PastTrapList, globalState.NonProjectileList, globalState.CurrentRound.Id, globalState.FutureSpellTypeSelected);
                     globalState.Enemy.Attack(globalState.CurrentFrame, globalState);
                     globalState.Enemy.Update(deltaTime, globalState);
@@ -242,14 +218,10 @@ namespace BalanceOfTime
                     }
                     break;
                 case GamePhase.TransitionStart:
-                    Raylib.StopMusicStream(globalState.CurrentBgm);
-                    globalState.CurrentBgm = globalState.BgmTransition;
-                    Raylib.PlayMusicStream(globalState.CurrentBgm);
                     globalState.CurrentPhase = GamePhase.Transition;
                     globalState.HitEffectList.Add(globalState.TransitionEffect.Clone());
                     break;
                 case GamePhase.Transition:
-                    Raylib.UpdateMusicStream(globalState.CurrentBgm);
                     foreach (HitEffect hitEffect in globalState.HitEffectList)
                     {
                         if (hitEffect.Die)

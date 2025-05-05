@@ -15,27 +15,7 @@ public class GlobalState
         Hourglass = Raylib.LoadTexture("assets/hourglass.png");
         ForegroundIcons = Raylib.LoadTexture("assets/foregroundicons.png");
 
-        Bgm1 = Raylib.LoadMusicStream("assets/bgm1.ogg");
-        Bgm2 = Raylib.LoadMusicStream("assets/bgm2.ogg");
-        Bgm3 = Raylib.LoadMusicStream("assets/bgm3.ogg");
-        Bgm4 = Raylib.LoadMusicStream("assets/bgm4.ogg");
-        Bgm5 = Raylib.LoadMusicStream("assets/bgm5.ogg");
-        BgmTransition = Raylib.LoadMusicStream("assets/reverse.ogg");
-
-        FireballHit = Raylib.LoadSound("assets/fireballHit.ogg");
-        ShootFireball1 = Raylib.LoadSound("assets/shootFireball.ogg");
-        ShootFireball2 = Raylib.LoadSound("assets/shootFireball2.ogg");
-        Spell = Raylib.LoadSound("assets/trap.ogg");
-        Hurt1 = Raylib.LoadSound("assets/hurt1.ogg");
-        Hurt2 = Raylib.LoadSound("assets/hurt2.ogg");
-        Hurt3 = Raylib.LoadSound("assets/hurt3.ogg");
-        Hurt4 = Raylib.LoadSound("assets/hurt4.ogg");
-        Hurt5 = Raylib.LoadSound("assets/hurt5.ogg");
-
-        CurrentBgm = Bgm1;
-
         Player player = new Player(0, 0, 0, EntityType.PresentPlayer);
-        player.LoadSounds(FireballHit, ShootFireball1, ShootFireball2, Spell, Hurt1, Hurt2, Hurt3, Hurt4, Hurt5);
         Enemy enemy = new Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, GlobalVariables.GameDifficulty);
 
         player.EntityType = EntityType.PresentPlayer;
@@ -90,25 +70,6 @@ public class GlobalState
     public FutureSpellType FutureSpellTypeSelected = FutureSpellType.Barrier;
 
     public HitEffect TransitionEffect;
-    //Music
-    public Music Bgm1;
-    public Music Bgm2;
-    public Music Bgm3;
-    public Music Bgm4;
-    public Music Bgm5;
-    public Music BgmTransition;
-    public Music CurrentBgm;
-
-    //Sounds
-    public Sound FireballHit;
-    public Sound ShootFireball1;
-    public Sound ShootFireball2;
-    public Sound Spell;
-    public Sound Hurt1;
-    public Sound Hurt2;
-    public Sound Hurt3;
-    public Sound Hurt4;
-    public Sound Hurt5;
 
     public void IncreaseScore(int amount)
     {
@@ -142,7 +103,6 @@ public class GlobalState
     public void RestartGame()
     {
         Player = new Player(0, 0, 0, EntityType.PresentPlayer);
-        Player.LoadSounds(FireballHit, ShootFireball1, ShootFireball2, Spell, Hurt1, Hurt2, Hurt3, Hurt4, Hurt5);
         Enemy = new Enemy(GlobalVariables.WindowSizeX / 2, GlobalVariables.WindowSizeY / 2, GlobalVariables.GameDifficulty);
         Player.EntityType = EntityType.PresentPlayer;
         Enemy.EntityType = EntityType.Enemy;
