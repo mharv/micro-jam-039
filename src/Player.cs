@@ -49,34 +49,6 @@ public class Player : Entity
         Die = false;
     }
 
-    public void LoadSounds(Sound fireballHit, Sound shootFireball1, Sound shootFireball2, Sound spell, Sound hurt1, Sound hurt2, Sound hurt3, Sound hurt4, Sound hurt5)
-    {
-        FireballHit = fireballHit;
-        ShootFireball1 = shootFireball1;
-        ShootFireball2 = shootFireball2;
-        Spell = spell;
-        Hurt1 = hurt1;
-        Hurt2 = hurt2;
-        Hurt3 = hurt3;
-        Hurt4 = hurt4;
-        Hurt5 = hurt5;
-
-        //Raylib.SetSoundVolume(FireballHit, 0.5f);
-        //Raylib.SetSoundVolume(shootFireball1, 0.5f);
-        //Raylib.SetSoundVolume(shootFireball2, 0.5f);
-        //Raylib.SetSoundVolume(Spell, 0.5f);
-    }
-
-    public Sound FireballHit;
-    public Sound ShootFireball1;
-    public Sound ShootFireball2;
-    public Sound Spell;
-    public Sound Hurt1;
-    public Sound Hurt2;
-    public Sound Hurt3;
-    public Sound Hurt4;
-    public Sound Hurt5;
-
     private Texture2D WizardSprite;
     private Texture2D WeaponSprite;
     private Texture2D BadWizardSprite;
@@ -168,33 +140,6 @@ public class Player : Entity
         // Update the hit timer
         if (Hit)
         {
-            StopSound(Hurt1);
-            StopSound(Hurt2);
-            StopSound(Hurt3);
-            StopSound(Hurt4);
-            StopSound(Hurt5);
-            int rand = new Random().Next(0, 5);
-            if (rand == 0)
-            {
-                PlaySound(Hurt1);
-            }
-            if (rand == 1)
-            {
-                PlaySound(Hurt2);
-            }
-            if (rand == 2)
-            {
-                PlaySound(Hurt3);
-            }
-            if (rand == 3)
-            {
-                PlaySound(Hurt4);
-            }
-            if (rand == 4)
-            {
-                PlaySound(Hurt5);
-            }
-
             HitTimer++;
             if (HitTimer >= HitDuration)
             {
@@ -216,24 +161,11 @@ public class Player : Entity
 
         if (leftButtonPressed)
         {
-            int rand = new Random().Next(0, 2);
-            if (rand == 0)
-            {
-                StopSound(ShootFireball1);
-                PlaySound(ShootFireball1);
-            }
-            if (rand == 1)
-            {
-                StopSound(ShootFireball2);
-                PlaySound(ShootFireball2);
-            }
             Shoot(projectileList);
         }
         if (rightButtonPressed)
         {
             Place(barrierList, pastTrapList, nonProjectileList, roundId, selectedSpell);
-            StopSound(Spell);
-            PlaySound(Spell);
         }
     }
     public void UpdatePast(int currentFrame, List<Projectile> projectileList, TimeSlice timeSlice)
@@ -255,7 +187,7 @@ public class Player : Entity
 
         if (EntityType == EntityType.PresentPlayer)
         {
-            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, EffectSprite, 3, 4, 20, null, FireballHit));
+            projectileList.Add(new Projectile(PositionX + forwardX, PositionY + forwardY, Direction, 0.0f, 1.0f, 0.0f, 5, 10, 360, EntityType, ProjectileSprite, EffectSprite, 3, 4, 20));
         }
         else
         {

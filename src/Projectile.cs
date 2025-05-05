@@ -21,7 +21,6 @@ public class Projectile : Entity
     public bool LoadedTexture;
     public int AnimationFrames;
     public bool Die;
-    public Sound? HitSound;
     private float CurrentSpeed;
     private int AnimFramesCounter;
     private int CurrentAnimFrame;
@@ -52,10 +51,9 @@ public class Projectile : Entity
         EffectAnimSpeed = 0;
         OriginEntityType = null;
         CurrentSpeed = BaseSpeed;
-        HitSound = null;
     }
 
-    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Texture2D texture = new Texture2D(), Texture2D effect = new Texture2D(), int frames = 1, int effectAnimFrames = 1, int effectAnimSpeed = 1, Entity? target = null, Sound? hitSound = null)
+    public Projectile(float positionX, float positionY, float direction, float turnSpeed, float baseSpeed, float acceleration, int radius, int damage, int framesToLive, EntityType? originEntityType = null, Texture2D texture = new Texture2D(), Texture2D effect = new Texture2D(), int frames = 1, int effectAnimFrames = 1, int effectAnimSpeed = 1, Entity? target = null)
     {
         OriginEntityType = originEntityType;
         EntityType = EntityType.Projectile;
@@ -80,7 +78,6 @@ public class Projectile : Entity
         EffectAnimFrames = effectAnimFrames;
         EffectAnimSpeed = effectAnimSpeed;
         CurrentSpeed = BaseSpeed;
-        HitSound = hitSound;
     }
 
     public void Update(float deltaTime, GlobalState globalState)
@@ -157,11 +154,6 @@ public class Projectile : Entity
                     Console.WriteLine($"HIT___________{entity.EntityType}_by {OriginEntityType}______: {PositionX}, {PositionY}");
                     entity.TakeDamage(Damage, floatingTextList);
                     Die = true;
-                    if (HitSound != null)
-                    {
-                        Sound sound = (Sound)HitSound;
-                        Raylib.PlaySound(sound);
-                    }
                     globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
@@ -173,11 +165,6 @@ public class Projectile : Entity
                     globalState.Player.IncreasePowerBar(Damage);
                     globalState.IncreaseScore(Damage);
                     Die = true;
-                    if (HitSound != null)
-                    {
-                        Sound sound = (Sound)HitSound;
-                        Raylib.PlaySound(sound);
-                    }
                     globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
@@ -188,11 +175,6 @@ public class Projectile : Entity
                     // entity.Health -= Damage;
                     // globalState.IncreaseScore(Damage);
                     Die = true;
-                    if (HitSound != null)
-                    {
-                        Sound sound = (Sound)HitSound;
-                        Raylib.PlaySound(sound);
-                    }
                     globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                     break;
                 }
@@ -207,11 +189,6 @@ public class Projectile : Entity
                         barrier.Die = true;
                         globalState.HitEffectList.Add(new HitEffect(PositionX, PositionY, Direction, Effect, EffectAnimFrames, EffectAnimSpeed));
                         Die = true;
-                        if (HitSound != null)
-                        {
-                            Sound sound = (Sound)HitSound;
-                            Raylib.PlaySound(sound);
-                        }
                     }
                     break;
                 }
