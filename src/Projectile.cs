@@ -228,12 +228,26 @@ public class Projectile : Entity
     {
         if (Texture.Id != 0)
         {
-            int realWidth = Texture.Width / AnimationFrames;
-            Rectangle sourceRect = new Rectangle(CurrentAnimFrame * realWidth, 0, Texture.Width / AnimationFrames, Texture.Height);
-            Rectangle destRect = new Rectangle(PositionX, PositionY, realWidth, Texture.Height);
+            int frameWidth = Texture.Width / AnimationFrames;
+            int safeFrame = Math.Clamp(CurrentAnimFrame, 0, AnimationFrames - 1);
 
-            System.Numerics.Vector2 origin = new System.Numerics.Vector2(realWidth / 2, Texture.Height / 2);
-            DrawTexturePro(Texture, sourceRect, destRect, origin, Direction, Color.White);
+            Rectangle sourceRect = new Rectangle(
+                x: safeFrame * frameWidth,
+                y: 0,
+                width: frameWidth,
+                height: Texture.Height
+            );
+
+            Rectangle destRect = new Rectangle(
+                x: PositionX,
+                y: PositionY,
+                width: frameWidth,
+                height: Texture.Height
+            );
+
+            System.Numerics.Vector2 origin = new System.Numerics.Vector2(frameWidth / 2f, Texture.Height / 2f);
+
+            Raylib.DrawTexturePro(Texture, sourceRect, destRect, origin, Direction, Color.White);
         }
         else
         {
