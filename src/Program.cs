@@ -1,4 +1,5 @@
-﻿using Raylib_cs;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Raylib_cs;
 using Globals;
 using static Raylib_cs.Raylib;
 using Entities;
@@ -6,22 +7,44 @@ using Recording;
 using Types;
 
 
-namespace BalanceOfTime;
-
-
-class Program
+namespace BalanceOfTime
 {
-    public static void Main()
+
+
+    public partial class Program
     {
-        InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
-        InitAudioDevice();
-        SetTargetFPS(60);
+        public static GlobalState globalState = new GlobalState();
 
-        GlobalState globalState = new GlobalState();
-        globalState.CurrentPhase = GamePhase.Menu;
+        public static void Main()
+        {
+            InitWindow(GlobalVariables.WindowSizeX, GlobalVariables.WindowSizeY, "Balance of Time");
+            InitAudioDevice();
+            SetTargetFPS(60);
+            globalState = new GlobalState();
+
+            globalState.CurrentPhase = GamePhase.Menu;
 
 
-        while (!WindowShouldClose())
+            //while (!WindowShouldClose())
+            //{
+            //    UpdateFrame();
+            //}
+            //
+            //// Save game history to file
+            //string filePath = "game_history.txt";
+            //globalState.GameHistory.SaveToFile(filePath);
+            //Console.WriteLine($"Game history saved to {filePath}");
+            //UnloadMusicStream(globalState.Bgm1);
+            //UnloadMusicStream(globalState.Bgm2);
+            //UnloadMusicStream(globalState.Bgm3);
+            //UnloadMusicStream(globalState.Bgm4);
+            //UnloadMusicStream(globalState.Bgm5);
+            //UnloadMusicStream(globalState.BgmTransition);
+            //CloseWindow();
+        }
+
+        [JSExport]
+        public static void UpdateFrame()
         {
             // get delta time
             float deltaTime = GetFrameTime();
@@ -46,7 +69,6 @@ class Program
                     EndDrawing();
                     break;
                 case GamePhase.RoundStart:
-                    Console.WriteLine(globalState.CurrentRound.Id);
                     Raylib.StopMusicStream(globalState.CurrentBgm);
                     if (globalState.CurrentRound.Id == 1)
                     {
@@ -342,17 +364,5 @@ class Program
                 EndDrawing();
             }
         }
-
-        // Save game history to file
-        string filePath = "game_history.txt";
-        globalState.GameHistory.SaveToFile(filePath);
-        Console.WriteLine($"Game history saved to {filePath}");
-        UnloadMusicStream(globalState.Bgm1);
-        UnloadMusicStream(globalState.Bgm2);
-        UnloadMusicStream(globalState.Bgm3);
-        UnloadMusicStream(globalState.Bgm4);
-        UnloadMusicStream(globalState.Bgm5);
-        UnloadMusicStream(globalState.BgmTransition);
-        CloseWindow();
     }
 }
