@@ -23,7 +23,9 @@ public enum EnemyAttackType
     Spiral,
     FastBurst,
     LargeProjectile,
-    Shotgun
+    Shotgun,
+    Tracking,
+    Curly,
 }
 public enum FutureSpellType
 {

@@ -55,6 +55,8 @@ public class Enemy : Entity
         AttackQueue.Enqueue(EnemyAttackType.FastBurst);
         AttackQueue.Enqueue(EnemyAttackType.LargeProjectile);
         AttackQueue.Enqueue(EnemyAttackType.Shotgun);
+        AttackQueue.Enqueue(EnemyAttackType.Tracking);
+        AttackQueue.Enqueue(EnemyAttackType.Curly);
 
         EntityType = EntityType.Enemy;
         EnemySprite = LoadTexture("assets/badguy.png");
@@ -214,6 +216,49 @@ public class Enemy : Entity
                                     new Projectile(PositionX, PositionY, adjustedDirection, 0.0f, DifficultySettings.ProjectileSpeed, 0.0f, 5, 10, 180, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
                                 });
                             }
+                        }
+                    }
+                    break;
+                case EnemyAttackType.Tracking:
+                    int projectile_count = 24;
+                    foreach (var i in Enumerable.Range(0, projectile_count))
+                    {
+                        int adjustedDirection = Direction + (i * (360 / projectile_count));
+                        if (ProjectileSchedule.ContainsKey(currentFrame))
+                        {
+                            var existingProjectiles = ProjectileSchedule[currentFrame].ToList();
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, 60.0f, 1.0f, 0.5f, 5, 1, 360, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed, Target));
+                            ProjectileSchedule[currentFrame] = existingProjectiles.ToArray();
+                        }
+                        else
+                        {
+                            ProjectileSchedule.Add(currentFrame, new Projectile[]
+                            {
+                                new Projectile(PositionX, PositionY, adjustedDirection, 60.0f, 1.0f, 0.5f, 5, 1, 360, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed, Target),
+                            });
+                        }
+                    }
+                    break;
+                case EnemyAttackType.Curly:
+                    int time_between_proj = 4;
+                    int proj_count = 8;
+                    bool rev = new Random().Next(0, 2) == 0; // Randomly decide whether to reverse
+                    foreach (var i in Enumerable.Range(0, proj_count))
+                    {
+                        float turn_dir = rev ? -30.0f : 30.0f;
+                        int adjustedDirection = Direction + (rev ? -i * (360 / proj_count) : i * (360 / proj_count));
+                        if (ProjectileSchedule.ContainsKey(currentFrame + i * time_between_proj))
+                        {
+                            var existingProjectiles = ProjectileSchedule[currentFrame + i * time_between_proj].ToList();
+                            existingProjectiles.Add(new Projectile(PositionX, PositionY, adjustedDirection, turn_dir, 2.0f, 0.5f, 5, 5, 360, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed));
+                            ProjectileSchedule[currentFrame + i * time_between_proj] = existingProjectiles.ToArray();
+                        }
+                        else
+                        {
+                            ProjectileSchedule.Add(currentFrame + i * time_between_proj, new Projectile[]
+                            {
+                                new Projectile(PositionX, PositionY, adjustedDirection, turn_dir, 2.0f, 0.0f, 5, 5, 360, EntityType.Enemy, ProjectileSprite, EffectSprite, 3, 4, ProjectileAnimSpeed),
+                            });
                         }
                     }
                     break;
